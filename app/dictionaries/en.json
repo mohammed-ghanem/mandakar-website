@@ -1,0 +1,73 @@
+{
+  "home": {
+    "title": "Home",
+    "navbar": {
+      "home": "Home",
+      "about": "About the Sheikh",
+      "khutbas": "Khutbas",
+      "lessons": "Lessons",
+      "lectures": "Lectures",
+      "fatwas": "Fatwas",
+      "contactUs": "Contact Us"
+    },
+    "hero": {}
+  },
+  "pages": {
+    "contactUs": {
+      "contactUs": "Contact Us",
+      "title": "Contact ",
+      "titleSpan": "Us",
+      "help": "How can we help you?",
+      "description": "Our team is always here to help you on your learning journey, whether you have a question about courses, need technical support, or want to learn more about available educational programs. Contact us anytime, and we will be happy to answer all your questions and provide the support you need.",
+      "yourMessage": "We are here for you",
+      "smallTitle": "We are here to answer your questions and help you on your learning journey with pleasure.",
+      "name": "Name",
+      "email": "Email Address",
+      "send": "Send",
+      "request": "Request Type",
+      "selectRequest": "Select Request Type",
+      "message": "Message",
+      "sending": "Sending…",
+      "requestTypes": {
+        "request": "Request",
+        "inquiry": "Inquiry",
+        "suggestion": "Suggestion",
+        "complaint": "Complaint"
+      }
+    },
+    "privacyPolicyPage": {
+      "title": "Privacy ",
+      "titleSpan": "Policy",
+      "loading": "Loading…",
+      "empty": "No content is available at the moment.",
+      "error": "We could not load this page. Please try again later."
+    },
+    "termsAndConditionsPage": {
+      "title": "Terms and ",
+      "titleSpan": "Conditions",
+      "loading": "Loading…",
+      "empty": "No content is available at the moment.",
+      "error": "We could not load this page. Please try again later."
+    }
+  },
+  "settings": {
+    "privacyPolicy": {
+      "title": "Privacy Policy",
+      "arabicContent": "Arabic Content",
+      "englishContent": "English Content",
+      "processing": "Saving changes…",
+      "saveBtn": "Save",
+      "successMessage": "Changes saved successfully",
+      "errorMessage": "Failed to save changes"
+    },
+    "termsAndConditions": {
+      "title": "Terms and Conditions",
+      "arabicContent": "Arabic Content",
+      "englishContent": "English Content",
+      "processing": "Saving changes…",
+      "saveBtn": "Save",
+      "successMessage": "Changes saved successfully",
+      "errorMessage": "Failed to save changes"
+    }
+  }
+}

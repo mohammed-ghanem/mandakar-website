@@ -1,0 +1,225 @@
+/* Font imports */
+@import url("https://fonts.googleapis.com/css2?family=Amiri&family=Almarai&family=Aref+Ruqaa&family=El+Messiri&family=Reem+Kufi&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap');
+/* Tailwind imports */
+@import "tailwindcss";
+
+/* Base styles */
+:root {
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+
+  /* Light theme variables */
+  --background: 0 0% 100%;
+  --foreground: 0 0% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 3.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 3.9%;
+  --primary: 0 0% 9%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 96.1%;
+  --secondary-foreground: 0 0% 9%;
+  --muted: 0 0% 96.1%;
+  --muted-foreground: 0 0% 45.1%;
+  --accent: 0 0% 96.1%;
+  --accent-foreground: 0 0% 9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 89.8%;
+  --input: 0 0% 89.8%;
+  --ring: 0 0% 3.9%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* Dark theme variables */
+  --background: 0 0% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 0 0% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 0 0% 9%;
+  --secondary: 0 0% 14.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 0 0% 14.9%;
+  --muted-foreground: 0 0% 63.9%;
+  --accent: 0 0% 14.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 14.9%;
+  --input: 0 0% 14.9%;
+  --ring: 0 0% 83.1%;
+}
+
+/* Simple theme mapping for Tailwind v4 */
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+}
+
+/* Base styles */
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+}
+
+/* Fix for Lucide React icons */
+svg {
+  color: inherit;
+}
+
+/* Your custom styles */
+
+ .heroSectionBg {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(251, 250, 248, 0.98) 0%,
+    rgba(251, 250, 248, 0.95) 25%,
+    rgba(251, 250, 248, 0.85) 45%,
+    rgba(251, 250, 248, 0.6) 65%,
+    rgba(251, 250, 248, 0.3) 80%,
+    rgba(251, 250, 248, 0) 100%
+  );
+}
+.heroSectionBg2 {
+  background: radial-gradient(
+    at bottom, 
+    rgba(145, 121, 75, 0.1) 0%,
+    rgba(145, 121, 71, .1) 0%,
+    rgba(145, 121, 71, .4) 0%,
+    rgba(145, 121, 71, 0) 70%);
+  height: 100vh;
+}
+
+
+
+.titleStyle {
+  background: #ebf5ff;
+  width: fit-content;
+  padding: 10px;
+  border-radius: 5px;
+  color: #495b64;
+  font-size: 16px;
+  font-weight: bold;
+}
+.titleDescription {
+  color: #3f6e9d;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+.submitButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  margin: auto;
+  margin-top: 24px;
+  /* display: block; */
+  background: #28a745;
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+}
+.submitButton:hover {
+  color: #fff;
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+.createBtn{
+  background: #4a46eb;
+  color: #fff;
+  padding: 4px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.grdianBK {
+  background: radial-gradient(circle, #f9fafb 20%, #fff 60%);
+}
+.backgroundDark {
+  background: rgb(243 244 246);
+}
+.mainColor {
+  color: #424C61;
+}
+.bkMainColor {
+  background: #424C61;
+}
+
+.scoundColor{
+  color: #9F854E;
+}
+.descriptionColor{
+  color: #737373;
+}
+.smallDescriptionColor{
+  color: #cfcfcf; 
+}
+.bgTitleColor {
+  background-color: #F5F3ED;
+}
+.bgTitleColor2 {
+  background-color: #f5f3ed2e;
+}
+.boxBgOpacity {
+  background-color: #f5f3ed30;
+}
+.bgTitleColorOpacity {
+  background : #E1D9C833;
+}
+.bgTitleColorOpacity2 {
+  /* background: rgba(225, 217, 200, .7); */
+  background: radial-gradient(circle, rgba(225, 217, 200, 1.5) 80%, #fff 100%);
+}
+.scoundBgColor{
+  background-color: #9F854E;
+}
+.lightBgColor {
+  background: #F5F3ED;
+}
+.studyTermsOverlayBg {
+  background: linear-gradient(1deg, #e9dcc185 0%, rgb(245 243 238 / 0%) 100%);
+}
+
+/* Book library category card — Figma linear: #E1D9C8 (top) → #9F854E (bottom) */
+.bookLibraryCategoryCardBg {
+  background:linear-gradient(#e1d9c8 52%, #e1d9c8 0%, #9f854e 150%)
+  
+}
+
+
+.fontBold {
+  font-weight: bold;
+}
+
+/* Sonner toasts — same family as root (IBM Plex Sans Arabic from imports above) */
+.fontCairo {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+}
+
