@@ -1,6 +1,5 @@
 "use client";
 
-import SmallHeroSection from "../smallHeroSection/SmallHeroSection";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import SocialLinks from "../socialLinks/SocialLinks";
@@ -13,7 +12,6 @@ import "./style.css";
 import { useState, type SubmitEventHandler } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ContactUsSkeleton from "@/components/skeletons/ContactUsSkeleton";
 import { useSubmitContactMutation } from "@/store/contact/contactApi";
 import { toast } from "sonner";
 
@@ -51,12 +49,9 @@ const ContactUs = () => {
     isArabic ? "left-3" : "right-3",
   );
 
-  if (!translate) {
-    return <ContactUsSkeleton />; 
-  }
 
-  const c = translate.pages?.contactUs;
-  const tSignUp = translate.pages?.signUp;
+
+  const c = translate?.pages?.contactUs;
   const requestTypeLabels = c?.requestTypes as
     | Record<string, string>
     | undefined;
@@ -64,11 +59,11 @@ const ContactUs = () => {
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !phone.trim() || !message.trim()) {
-      toast.error(tSignUp?.fillAllFields ?? "Please fill all fields");
+      toast.error(c?.fillAllFields ?? "Please fill all fields");
       return;
     }
     if (!emailValid(email)) {
-      toast.error(tSignUp?.invalidEmail ?? "Invalid email address");
+      toast.error(c?.invalidEmail ?? "Invalid email address");
       return;
     }
     if (!request) {
@@ -106,20 +101,13 @@ const ContactUs = () => {
         toast.error(d.message);
         return;
       }
-      toast.error(tSignUp?.requestFailed ?? "Something went wrong.");
+      toast.error(c?.requestFailed ?? "Something went wrong.");
     }
   };
 
   return (
     <div>
-      <SmallHeroSection
-        title={
-          <h1 className="text-2xl font-semibold mt-28 mb-4 ">
-            <span className="mainColor">{c?.title}</span>
-            <span className="scoundColor">{c?.titleSpan}</span>
-          </h1>
-        }
-      />
+     
 
       <div
         className={`relative container mx-auto w-[95%] lg:w-[70%] mt-10  
@@ -240,7 +228,7 @@ const ContactUs = () => {
                       className={`block text-[13px] font-semibold ${lang === "ar" ? "text-right!" : "text-left"}
                      `}
                     >
-                      {tSignUp?.phone}
+                      {c?.phone}
                     </label>
 
                     <PhoneInput
