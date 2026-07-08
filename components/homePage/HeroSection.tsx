@@ -100,7 +100,7 @@ export const HeroSection = () => {
           showDots={false}
           itemsPerView={itemsPerView}
           pauseOnHover={true}
-          enableDrag={false}
+          enableDrag={true}
           cardClassName="border-0 bg-transparent p-0 shadow-none"
           cardContentClassName="flex items-center justify-center p-0 px-0"
         />
