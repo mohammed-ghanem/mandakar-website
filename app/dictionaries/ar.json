@@ -5,7 +5,6 @@
       "search": "ابحث",
       "searchPlaceholder": "ابحث عن خطبة او درس او كتاب او مقالة"
     },
-
     "navbar": {
       "home": "الرئيسية",
       "about": "ترجمة الشيخ",
@@ -16,7 +15,22 @@
       "articles": "المقالات",
       "books": "الكتب والرسائل"
     },
-    "hero": {}
+    "hero": {
+      "title": "مختارات من المكتبة",
+      "description": "مختارات من أبرز ما تضمه المكتبة من مواد علمية نافعة."
+    },
+    "homeTitles": {
+      "lastPublished": "آخر ما تم نشره",
+      "scholarly": "الشروح العلمية",
+      "lectures": "المحاضرات",
+      "khutbas": "الخطب",
+      "fatwas": "الفتاوى",
+      "articles": "المقالات",
+      "books": "الكتب والرسائل",
+      "moreWatched": "الأكثر استماعاً وقراءه",
+      "audioVisual": "المواد الصوتية والمرئية",
+      "readingItems": "المواد المقروءة"
+    }
   },
   "pages": {
     "contactUs": {

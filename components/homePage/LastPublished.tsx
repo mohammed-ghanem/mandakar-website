@@ -9,6 +9,7 @@ import fatwa from "@/public/assets/images/fatwa.svg";
 import articles from "@/public/assets/images/articles.svg";
 import books from "@/public/assets/images/books.svg";
 import qaph from "@/public/assets/images/qaph.svg";
+import TranslateHook from "@/translate/TranslateHook";
 import {
   scholarlyItems,
   lectureItems,
@@ -19,6 +20,8 @@ import {
 } from "./TestData";
 
 const LastPublished = () => {
+  const translate = TranslateHook();
+  const homeTitles = translate?.home?.homeTitles;
   return (
     <section className="pb-10 relative">
       <div className="pointer-events-none absolute top-[20%] right-0 z-10 hiddenmd:block">
@@ -32,13 +35,13 @@ const LastPublished = () => {
       </div>
       <div className="container mx-auto w-full md:w-[90%] max-w-7xl px-2 sm:px-4">
         <h2 className="mb-6 text-xl font-bold scoundColor sm:text-2xl">
-          آخر ما تم نشره
+          {homeTitles?.lastPublished}
         </h2>
 
         <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
           {/* Scholarly Items */}
           <ReuseBox
-            title="الشروح العلمية"
+            title={homeTitles?.scholarly}
             icon={<Image src={bookOpen} alt="" width={40} height={40} />}
             showIconBackground={true}
             viewAllText="عرض الكل"
@@ -47,7 +50,7 @@ const LastPublished = () => {
           />
           {/* Lectures */}
           <ReuseBox
-            title="المحاضرات"
+            title={homeTitles?.lectures}
             icon={<Image src={videoIcon} alt="" width={30} height={30} />}
             showIconBackground={true}
             viewAllText="عرض الكل"
@@ -56,7 +59,7 @@ const LastPublished = () => {
           />
           {/* Sermons */}
           <ReuseBox
-            title="الخطب"
+            title={homeTitles?.khutbas}
             icon={<Image src={sermons} alt="" width={30} height={30} />}
             showIconBackground={true}
             viewAllText="عرض الكل"
@@ -65,7 +68,7 @@ const LastPublished = () => {
           />
           {/* Fatwas */}
           <ReuseBox
-            title="الفتاوى"
+            title={homeTitles?.fatwas}
             icon={<Image src={fatwa} alt="" width={30} height={30} />}
             showIconBackground={true}
             viewAllText="عرض الكل"
@@ -74,7 +77,7 @@ const LastPublished = () => {
           />
           {/* Articles */}
           <ReuseBox
-            title="المقالات"
+            title={homeTitles?.articles}
             icon={<Image src={articles} alt="" width={30} height={30} />}
             showIconBackground={true}
             viewAllText="عرض الكل"
@@ -83,7 +86,7 @@ const LastPublished = () => {
           />
           {/* Books and Letters */}
           <ReuseBox
-            title="الكتب والرسائل"
+            title={homeTitles?.books}
             icon={
               <Image
                 src={books}

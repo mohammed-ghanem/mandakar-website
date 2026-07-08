@@ -9,6 +9,7 @@ import banner4 from "@/public/assets/images/4.png";
 import Image from "next/image";
 import Link from "next/link";
 import qaph from "@/public/assets/images/qaph.svg";
+import TranslateHook from "@/translate/TranslateHook";
 
 const getItemsPerView = (width: number) => {
   if (width < 640) return 1;
@@ -18,6 +19,8 @@ const getItemsPerView = (width: number) => {
 };
 
 export const HeroSection = () => {
+  const translate = TranslateHook();
+  const hero = translate?.home?.hero;
   const [itemsPerView, setItemsPerView] = useState(4);
 
   useEffect(() => {
@@ -80,10 +83,10 @@ export const HeroSection = () => {
       <div className="container mx-auto w-[90%] max-w-7xl px-2 pt-8 sm:px-4 sm:pt-12 md:pt-15">
         <div className="mb-6 sm:mb-8 md:mb-10">
           <h1 className="text-xl font-bold scoundColor sm:text-2xl">
-            مختارات من المكتبة
+            {hero?.title}
           </h1>
           <p className="mt-1 text-sm font-medium grayColor sm:mt-2 sm:text-base">
-            مختارات من أبرز ما تضمه المكتبة من مواد علمية نافعة.
+            {hero?.description}
           </p>
         </div>
 

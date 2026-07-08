@@ -15,7 +15,22 @@
       "articles": "Articles",
       "books": "Books and Letters"
     },
-    "hero": {}
+    "hero": {
+      "title": "Selected from the Library",
+      "description": "Selected from the most important materials in the library."
+    },
+    "homeTitles": {
+      "lastPublished": "Last Published",
+      "scholarly": "Scholarly Commentaries",
+      "lectures": "Lectures",
+      "khutbas": "Khutbas",
+      "fatwas": "Fatwas",
+      "articles": "Articles",
+      "books": "Books and Letters",
+      "moreWatched": "More Watched and Readed",
+      "audioVisual": "Audio and Visual Materials",
+      "readingItems": "Reading Materials"
+    }
   },
   "pages": {
     "contactUs": {
