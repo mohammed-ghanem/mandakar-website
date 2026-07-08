@@ -38,7 +38,7 @@ const MoreWatched = () => {
               video: <Image src={videoIcon} alt="" width={30} height={30} />,
             }}
             showIconBackground={true}
-            viewAllText="عرض الكل"
+            viewAllText={homeTitles?.viewAll}
             viewAllHref="/ar"
             items={mostWatchedAudioVisualItems}
           />
@@ -46,7 +46,7 @@ const MoreWatched = () => {
             title={homeTitles?.readingItems}
             icon={<Image src={bookOpen} alt="" width={40} height={40} />}
             showIconBackground={true}
-            viewAllText="عرض الكل"
+            viewAllText={homeTitles?.viewAll}
             viewAllHref="/ar"
             items={mostWatchedReadingItems}
           />

@@ -44,7 +44,7 @@ const LastPublished = () => {
             title={homeTitles?.scholarly}
             icon={<Image src={bookOpen} alt="" width={40} height={40} />}
             showIconBackground={true}
-            viewAllText="عرض الكل"
+            viewAllText={homeTitles?.viewAll}
             viewAllHref="/ar"
             items={scholarlyItems}
           />
@@ -53,7 +53,7 @@ const LastPublished = () => {
             title={homeTitles?.lectures}
             icon={<Image src={videoIcon} alt="" width={30} height={30} />}
             showIconBackground={true}
-            viewAllText="عرض الكل"
+            viewAllText={homeTitles?.viewAll}
             viewAllHref="/ar"
             items={lectureItems}
           />
@@ -62,7 +62,7 @@ const LastPublished = () => {
             title={homeTitles?.khutbas}
             icon={<Image src={sermons} alt="" width={30} height={30} />}
             showIconBackground={true}
-            viewAllText="عرض الكل"
+            viewAllText={homeTitles?.viewAll}
             viewAllHref="/ar"
             items={sermonItems}
           />
@@ -71,7 +71,7 @@ const LastPublished = () => {
             title={homeTitles?.fatwas}
             icon={<Image src={fatwa} alt="" width={30} height={30} />}
             showIconBackground={true}
-            viewAllText="عرض الكل"
+            viewAllText={homeTitles?.viewAll}
             viewAllHref="/ar"
             items={fatwaItems}
           />
@@ -80,7 +80,7 @@ const LastPublished = () => {
             title={homeTitles?.articles}
             icon={<Image src={articles} alt="" width={30} height={30} />}
             showIconBackground={true}
-            viewAllText="عرض الكل"
+            viewAllText={homeTitles?.viewAll}
             viewAllHref="/ar"
             items={articleItems}
           />
@@ -97,7 +97,7 @@ const LastPublished = () => {
               />
             }
             showIconBackground={false}
-            viewAllText="عرض الكل"
+            viewAllText={homeTitles?.viewAll}
             viewAllHref="/ar"
             items={bookItems}
           />
