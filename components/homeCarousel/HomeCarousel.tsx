@@ -1,17 +1,23 @@
 /* eslint-disable @next/next/no-img-element */
-import React from "react";
 import CarouselComponent from "../carousel/CarouselComponent";
+import banner1 from "@/public/assets/images/1.jpg";
+import banner2 from "@/public/assets/images/2.jpg";
+import banner3 from "@/public/assets/images/3.png";
+import banner4 from "@/public/assets/images/4.png";
+import Image from "next/image";
+
 
 const HomeCarousel = () => {
     const items = [
-        { id: 1, img: "https://www.hamadalhajri.net/Files/settings/banner.png" },
-        { id: 2, img: "https://placehold.co/1400x400/000000/FFF" },
-        { id: 3, img: "https://placehold.co/1400x400/orange/white" },
+        { id: 1, img: banner1 },
+        { id: 2, img: banner2 },
+        { id: 3, img: banner3 },
+        { id: 4, img: banner4 },
     ];
 
     const slider = items.map((item) => (
         <div key={item.id}>
-            <img src={item.img} alt={`Slide ${item.id}`} className="w-full h-full object-cover" />
+            <Image src={item.img} alt={`Slide ${item.id}`} className="w-full h-full object-cover" />
         </div>
     ));
 
@@ -25,7 +31,7 @@ const HomeCarousel = () => {
                     interval={5000}
                     showArrows={false}
                     showDots={true}
-                    itemsPerView={1} // Change to 2, 3, or 4 for different layouts
+                    itemsPerView={4} // Change to 2, 3, or 4 for different layouts
                 />
             </div>
         </div>

@@ -1,14 +1,20 @@
 {
   "home": {
     "title": "الصفحة الرئيسية",
+    "searchInput": {
+      "search": "ابحث",
+      "searchPlaceholder": "ابحث عن خطبة او درس او كتاب او مقالة"
+    },
+
     "navbar": {
       "home": "الرئيسية",
-      "about": "عن الشيخ",
-      "khutbas": "الخطب",
-      "lessons": "الدروس",
+      "about": "ترجمة الشيخ",
+      "scholarly": "الشروح العلمية",
       "lectures": "المحاضرات",
+      "khutbas": "الخطب",
       "fatwas": "الفتاوى",
-      "contactUs": "تواصل معنا"
+      "articles": "المقالات",
+      "books": "الكتب والرسائل"
     },
     "hero": {}
   },

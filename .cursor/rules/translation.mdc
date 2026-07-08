@@ -1,0 +1,72 @@
+---
+description: i18n convention — TranslateHook, LangUseParams, and dictionary files
+alwaysApply: true
+---
+
+# Translation (i18n)
+
+Use this pattern for all user-facing text in client components.
+
+## Hooks
+
+- **`TranslateHook()`** — returns the full dictionary for the current locale. Assign directly; do not destructure.
+- **`LangUseParams()`** — returns the current lang code (`"ar"` | `"en"`). Use for links, `dir`, and locale-specific logic.
+
+```tsx
+"use client";
+
+import TranslateHook from "@/translate/TranslateHook";
+import LangUseParams from "@/translate/LangUseParams";
+
+const MyComponent = () => {
+  const translate = TranslateHook();
+  const lang = LangUseParams();
+
+  return (
+    <Link href={`/${lang}/contact-us`}>
+      {translate.home.navbar.contactUs}
+    </Link>
+  );
+};
+```
+
+```tsx
+// ❌ BAD — TranslateHook does not return { translate }
+const { translate } = TranslateHook();
+
+// ✅ GOOD
+const translate = TranslateHook();
+```
+
+## Dictionary files
+
+- Add keys to **both** `app/dictionaries/ar.json` and `app/dictionaries/en.json`.
+- Mirror the same nested structure in both files.
+- Group by feature/page (e.g. `home.searchInput`, `pages.contactUs`).
+
+```json
+{
+  "home": {
+    "searchInput": {
+      "search": "ابحث",
+      "searchPlaceholder": "ابحث عن خطبة او درس او كتاب او مقالة"
+    }
+  }
+}
+```
+
+Access: `translate.home.searchInput.searchPlaceholder`
+
+## When to use which
+
+| Need | Use |
+|------|-----|
+| Display translated text | `translate.section.key` |
+| Build localized URLs | `lang` from `LangUseParams()` |
+| RTL / LTR on an element | `dir={lang === "ar" ? "rtl" : "ltr"}` |
+
+## Rules
+
+- Never hardcode user-facing strings in components; add dictionary keys instead.
+- Never inline Arabic/English conditionals when a dictionary key suffices.
+- Server components: pass `lang` from route `params` or load dictionaries server-side; do not use these client hooks.

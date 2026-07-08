@@ -73,14 +73,10 @@ export default async function RootLayout({
         <Providers>
           <div className="">
             <div>
-              <header>
                 <Header />
-              </header>
-
-              <main className="">
+              <main>
                 <div className="mx-auto">{children}</div>
               </main>
-
               <Footer />
             </div>
           </div>

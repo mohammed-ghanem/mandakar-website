@@ -1,14 +1,19 @@
 {
   "home": {
     "title": "Home",
+    "searchInput": {
+      "search": "Search",
+      "searchPlaceholder": "Search for a sermon, lesson, book, or article"
+    },
     "navbar": {
       "home": "Home",
-      "about": "About the Sheikh",
+      "about": "Sheikh Translation",
+      "scholarly": "Scholarly Commentaries",
       "khutbas": "Khutbas",
-      "lessons": "Lessons",
       "lectures": "Lectures",
       "fatwas": "Fatwas",
-      "contactUs": "Contact Us"
+      "articles": "Articles",
+      "books": "Books and Letters"
     },
     "hero": {}
   },
