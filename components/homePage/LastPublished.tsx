@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import ReuseBox from "@/components/reusebox/ReuseBox";
 import bookOpen from "@/public/assets/images/book.svg";
@@ -10,6 +11,7 @@ import articles from "@/public/assets/images/articles.svg";
 import books from "@/public/assets/images/books.svg";
 import qaph from "@/public/assets/images/qaph.svg";
 import TranslateHook from "@/translate/TranslateHook";
+import LastPublishedSkeleton from "@/components/skeletons/LastPublishedSkeleton";
 import {
   scholarlyItems,
   lectureItems,
@@ -22,6 +24,16 @@ import {
 const LastPublished = () => {
   const translate = TranslateHook();
   const homeTitles = translate?.home?.homeTitles;
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
+
+  if (!isReady || !homeTitles) {
+    return <LastPublishedSkeleton />;
+  }
+
   return (
     <section className="pb-10 relative">
       <div className="pointer-events-none absolute top-[20%] right-0 z-10 hiddenmd:block">

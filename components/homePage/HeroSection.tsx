@@ -10,22 +10,17 @@ import Image from "next/image";
 import Link from "next/link";
 import qaph from "@/public/assets/images/qaph.svg";
 import TranslateHook from "@/translate/TranslateHook";
-
-const getItemsPerView = (width: number) => {
-  if (width < 640) return 1;
-  if (width < 768) return 2;
-  if (width < 1024) return 3;
-  return 4;
-};
+import HeroSectionSkeleton from "@/components/skeletons/HeroSectionSkeleton";
+import { getCarouselItemsPerView } from "./carouselBreakpoints";
 
 export const HeroSection = () => {
   const translate = TranslateHook();
   const hero = translate?.home?.hero;
-  const [itemsPerView, setItemsPerView] = useState(4);
+  const [itemsPerView, setItemsPerView] = useState<number | null>(null);
 
   useEffect(() => {
     const updateItemsPerView = () => {
-      setItemsPerView(getItemsPerView(window.innerWidth));
+      setItemsPerView(getCarouselItemsPerView(window.innerWidth));
     };
 
     updateItemsPerView();
@@ -67,6 +62,10 @@ export const HeroSection = () => {
       </p>
     </Link>
   ));
+
+  if (itemsPerView === null) {
+    return <HeroSectionSkeleton />;
+  }
 
   return (
     <div className="relative pb-8 sm:pb-10">

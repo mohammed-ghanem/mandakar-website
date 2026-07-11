@@ -1,13 +1,13 @@
-import React from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import ReuseBox from "../reusebox/ReuseBox";
 import Image from "next/image";
 import bookOpen from "@/public/assets/images/book.svg";
 import audio from "@/public/assets/images/audio.svg";
 import videoIcon from "@/public/assets/images/videoIcon.svg";
 import TranslateHook from "@/translate/TranslateHook";
-
-
-// test data
+import MoreWatchedSkeleton from "@/components/skeletons/MoreWatchedSkeleton";
 import {
   mostWatchedAudioVisualItems,
   mostWatchedReadingItems,
@@ -16,6 +16,16 @@ import {
 const MoreWatched = () => {
   const translate = TranslateHook();
   const homeTitles = translate?.home?.homeTitles;
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
+
+  if (!isReady || !homeTitles) {
+    return <MoreWatchedSkeleton />;
+  }
+
   return (
     <section className="relative overflow-hidden py-10">
       <div
