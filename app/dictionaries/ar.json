@@ -3,7 +3,7 @@
     "title": "الصفحة الرئيسية",
     "searchInput": {
       "search": "ابحث",
-      "searchPlaceholder": "ابحث عن خطبة او درس او كتاب او مقالة"
+      "searchPlaceholder": "ابحث عن خطبة أو درس أو كتاب أو مقالة"
     },
     "navbar": {
       "home": "الرئيسية",
@@ -27,7 +27,7 @@
       "fatwas": "الفتاوى",
       "articles": "المقالات",
       "books": "الكتب والرسائل",
-      "moreWatched": "الأكثر استماعاً وقراءه",
+      "moreWatched": "الأكثر مشاهدة",
       "audioVisual": "المواد الصوتية والمرئية",
       "readingItems": "المواد المقروءة",
       "viewAll": "عرض الكل"

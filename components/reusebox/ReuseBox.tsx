@@ -10,6 +10,11 @@ import type { ReuseBoxItem, ReuseBoxProps } from "./types";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import playIcon from "@/public/assets/images/play.svg";
+import {
+  claimAudioPlayback,
+  releaseAudioPlayback,
+  stopAllAudioPlayback,
+} from "./mediaPlayback";
 
 const PdfViewer = dynamic(() => import("./PdfViewer"), {
   ssr: false,
@@ -43,7 +48,7 @@ const getYoutubeEmbedUrl = (url: string) => {
     /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]+)/,
   );
   const videoId = match?.[1] ?? url;
-  return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  return `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
 };
 
 const DownloadButton = ({
@@ -118,13 +123,15 @@ const AudioPlayerBar = ({
 
     if (isPlaying) {
       audio.pause();
-    } else {
-      void audio.play().then(() => {
-        if (Number.isFinite(audio.duration) && audio.duration > 0) {
-          setTotalDurationSec(audio.duration);
-        }
-      });
+      return;
     }
+
+    claimAudioPlayback(audio);
+    void audio.play().then(() => {
+      if (Number.isFinite(audio.duration) && audio.duration > 0) {
+        setTotalDurationSec(audio.duration);
+      }
+    });
   };
 
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -166,9 +173,16 @@ const AudioPlayerBar = ({
             setTotalDurationSec(e.currentTarget.duration);
           }
         }}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onEnded={() => {
+        onPlay={(e) => {
+          claimAudioPlayback(e.currentTarget);
+          setIsPlaying(true);
+        }}
+        onPause={(e) => {
+          releaseAudioPlayback(e.currentTarget);
+          setIsPlaying(false);
+        }}
+        onEnded={(e) => {
+          releaseAudioPlayback(e.currentTarget);
           setIsPlaying(false);
           setCurrentTimeSec(0);
           setCurrentProgress(0);
@@ -276,7 +290,10 @@ const VideoItemActions = ({
       <div className="flex shrink-0 items-center">
         <button
           type="button"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            stopAllAudioPlayback();
+            setIsOpen(true);
+          }}
           aria-label="تشغيل الفيديو"
           className={actionBtnClass}
         >
@@ -284,15 +301,23 @@ const VideoItemActions = ({
         </button>
       </div>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          if (open) stopAllAudioPlayback();
+          setIsOpen(open);
+        }}
+      >
         <DialogContent className="max-w-4xl gap-0 overflow-hidden p-10 sm:max-w-3xl">
           <DialogTitle className="sr-only">{title}</DialogTitle>
           <div className="relative aspect-video w-full">
             <iframe
               src={isOpen ? getYoutubeEmbedUrl(youtubeUrl) : undefined}
               title={title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              loading="lazy"
               className="absolute inset-0 h-full w-full"
             />
           </div>
