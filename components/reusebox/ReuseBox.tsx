@@ -48,7 +48,13 @@ const getYoutubeEmbedUrl = (url: string) => {
     /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]+)/,
   );
   const videoId = match?.[1] ?? url;
-  return `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+  const params = new URLSearchParams({
+    autoplay: "1",
+    enablejsapi: "1",
+    playsinline: "1",
+    rel: "0",
+  });
+  return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
 };
 
 const DownloadButton = ({
@@ -312,12 +318,12 @@ const VideoItemActions = ({
           <DialogTitle className="sr-only">{title}</DialogTitle>
           <div className="relative aspect-video w-full">
             <iframe
+              key={isOpen ? youtubeUrl : "closed"}
               src={isOpen ? getYoutubeEmbedUrl(youtubeUrl) : undefined}
               title={title}
-              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               referrerPolicy="strict-origin-when-cross-origin"
-              loading="lazy"
               className="absolute inset-0 h-full w-full"
             />
           </div>
