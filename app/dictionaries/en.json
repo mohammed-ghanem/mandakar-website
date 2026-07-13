@@ -13,7 +13,9 @@
       "lectures": "Lectures",
       "fatwas": "Fatwas",
       "articles": "Articles",
-      "books": "Books and Letters"
+      "books": "Books and Letters",
+      "privacyPolicy": "Privacy Policy",
+      "termsAndConditions": "Terms and Conditions"
     },
     "hero": {
       "title": "Selected from the Library",

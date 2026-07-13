@@ -23,6 +23,8 @@ const Footer = () => {
     { label: navbar?.fatwas, href: `/${lang}` },
     { label: navbar?.articles, href: `/${lang}` },
     { label: navbar?.books, href: `/${lang}` },
+    { label: navbar?.privacyPolicy, href: `/${lang}` },
+    { label: navbar?.termsAndConditions, href: `/${lang}` },
   ];
 
   const linkClassName =
@@ -63,9 +65,9 @@ const Footer = () => {
               <Image
                 src={copyright}
                 alt="copyright"
-                width={180}
-                height={150}
-                className="h-auto w-36 md:w-[180px]"
+                width={230}
+                height={200}
+                className="h-auto w-50 md:w-[230px]"
               />
             </span>
             <span>&copy; 2026 - {new Date().getFullYear()}</span>

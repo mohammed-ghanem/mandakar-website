@@ -13,7 +13,9 @@
       "khutbas": "الخطب",
       "fatwas": "الفتاوى",
       "articles": "المقالات",
-      "books": "الكتب والرسائل"
+      "books": "الكتب والرسائل",
+      "privacyPolicy": "سياسة الخصوصية",
+      "termsAndConditions": "الشروط والأحكام"
     },
     "hero": {
       "title": "مختارات من المكتبة",
