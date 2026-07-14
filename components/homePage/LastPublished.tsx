@@ -72,7 +72,7 @@ const LastPublished = () => {
           {/* Sermons */}
           <ReuseBox
             title={homeTitles?.khutbas}
-            icon={<Image src={sermons} alt="" width={30} height={30} />}
+            icon={<Image src={sermons} alt="" width={45} height={40} />}
             showIconBackground={true}
             viewAllText={homeTitles?.viewAll}
             viewAllHref="/ar"
