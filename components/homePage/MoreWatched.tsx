@@ -6,6 +6,8 @@ import Image from "next/image";
 import bookOpen from "@/public/assets/images/book.svg";
 import audio from "@/public/assets/images/audio.svg";
 import videoIcon from "@/public/assets/images/videoIcon.svg";
+import articles from "@/public/assets/images/articles.svg";
+import books from "@/public/assets/images/books.png";
 import TranslateHook from "@/translate/TranslateHook";
 import MoreWatchedSkeleton from "@/components/skeletons/MoreWatchedSkeleton";
 import {
@@ -41,25 +43,46 @@ const MoreWatched = () => {
         </h2>
 
         <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
-          <ReuseBox
-            title={homeTitles?.audioVisual}
-            iconsByType={{
-              audio: <Image src={audio} alt="" width={30} height={30} />,
-              video: <Image src={videoIcon} alt="" width={30} height={30} />,
-            }}
-            showIconBackground={true}
-            viewAllText={homeTitles?.viewAll}
-            viewAllHref="/ar"
-            items={mostWatchedAudioVisualItems}
-          />
-          <ReuseBox
-            title={homeTitles?.readingItems}
-            icon={<Image src={bookOpen} alt="" width={40} height={40} />}
-            showIconBackground={true}
-            viewAllText={homeTitles?.viewAll}
-            viewAllHref="/ar"
-            items={mostWatchedReadingItems}
-          />
+          <div className="flex h-full min-h-0 flex-col">
+            <ReuseBox
+              title={homeTitles?.audioVisual}
+              iconsByType={{
+                audio: <Image src={audio} alt="" width={30} height={30} />,
+                video: <Image src={videoIcon} alt="" width={30} height={30} />,
+              }}
+              showIconBackground={true}
+              viewAllText={homeTitles?.viewAll}
+              viewAllHref="/ar"
+              items={mostWatchedAudioVisualItems}
+              className="h-full"
+            />
+          </div>
+          <div className="flex h-full min-h-0 flex-col gap-6">
+            <ReuseBox
+              title={homeTitles?.articles}
+              icon={<Image src={articles} alt="" width={30} height={30} />}
+              showIconBackground={true}
+              viewAllText={homeTitles?.viewAll}
+              viewAllHref="/ar"
+              items={mostWatchedReadingItems}
+            />
+            <ReuseBox
+              title={homeTitles?.books}
+              icon={
+                <Image
+                  src={books}
+                  alt=""
+                  width={80}
+                  height={80}
+                  className="max-w-fit! py-7 my-4 p-0.5 rounded-lg"
+                />
+              }
+              showIconBackground={false}
+              viewAllText={homeTitles?.viewAll}
+              viewAllHref="/ar"
+              items={mostWatchedReadingItems}
+            />
+          </div>
         </div>
       </div>
     </section>

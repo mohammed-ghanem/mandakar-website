@@ -6,9 +6,10 @@ import ReuseBox from "@/components/reusebox/ReuseBox";
 import bookOpen from "@/public/assets/images/book.svg";
 import videoIcon from "@/public/assets/images/videoIcon.svg";
 import sermons from "@/public/assets/images/sermons.svg";
+import audio from "@/public/assets/images/audio.svg";
 import fatwa from "@/public/assets/images/fatwa.svg";
 import articles from "@/public/assets/images/articles.svg";
-import books from "@/public/assets/images/books.svg";
+import books from "@/public/assets/images/books.png";
 import qaph from "@/public/assets/images/qaph.svg";
 import TranslateHook from "@/translate/TranslateHook";
 import LastPublishedSkeleton from "@/components/skeletons/LastPublishedSkeleton";
@@ -72,7 +73,7 @@ const LastPublished = () => {
           {/* Sermons */}
           <ReuseBox
             title={homeTitles?.khutbas}
-            icon={<Image src={sermons} alt="" width={45} height={40} />}
+            icon={<Image src={audio} alt="" width={30} height={30} />}
             showIconBackground={true}
             viewAllText={homeTitles?.viewAll}
             viewAllHref="/ar"
@@ -103,9 +104,9 @@ const LastPublished = () => {
               <Image
                 src={books}
                 alt=""
-                width={120}
-                height={200}
-                className="max-w-fit! bg-[#F7F2EA] p-0.5 py-4 rounded-lg"
+                width={80}
+                height={80}
+                className="max-w-fit! py-7 my-4 p-0.5 rounded-lg"
               />
             }
             showIconBackground={false}

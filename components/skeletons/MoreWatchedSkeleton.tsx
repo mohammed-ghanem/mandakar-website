@@ -10,8 +10,13 @@ const MoreWatchedSkeleton = () => {
         <Skeleton className="mb-6 h-7 w-52 sm:h-8 sm:w-64" />
 
         <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
-          <ReuseBoxSkeleton audioItemIndexes={[0, 2, 4]} />
-          <ReuseBoxSkeleton />
+          <div className="flex h-full min-h-0 flex-col">
+            <ReuseBoxSkeleton audioItemIndexes={[0, 2, 4]} />
+          </div>
+          <div className="flex h-full min-h-0 flex-col gap-6">
+            <ReuseBoxSkeleton />
+            <ReuseBoxSkeleton />
+          </div>
         </div>
       </div>
     </section>
