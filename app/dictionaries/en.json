@@ -33,6 +33,17 @@
       "audioVisual": "Audio and Visual Materials",
       "readingItems": "Reading Materials",
       "viewAll": "View All"
+    },
+    "statistics": {
+      "title": "Statistics",
+      "scholarly": "Scholarly Commentaries",
+      "lectures": "Lectures",
+      "khutbas": "Khutbas",
+      "fatwas": "Fatwas",
+      "articles": "Articles",
+      "books": "Books and Letters",
+      "attachments": "Total Attachments",
+      "visits": "Visits"
     }
   },
   "pages": {

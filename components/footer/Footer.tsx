@@ -67,13 +67,15 @@ const Footer = () => {
                 alt="copyright"
                 width={230}
                 height={200}
-                className="h-auto w-50 md:w-[230px]"
+                className="h-auto w-50 md:w-57.5"
               />
             </span>
             <span>&copy; 2026 - {new Date().getFullYear()}</span>
           </p>
           <p className="mt-2 text-[10px] text-white sm:text-xs">
-            WeCan For Development & IT
+            <Link href="https://wecandevmode.online" target="_blank">
+              WeCan For Development & IT
+            </Link>
           </p>
         </div>
       </div>

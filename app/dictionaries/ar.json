@@ -33,6 +33,17 @@
       "audioVisual": "المواد الصوتية والمرئية",
       "readingItems": "المواد المقروءة",
       "viewAll": "عرض الكل"
+    },
+    "statistics": {
+      "title": "احصائيات",
+      "scholarly": "الشروح العلمية",
+      "lectures": "المحاضرات",
+      "khutbas": "الخطب",
+      "fatwas": "الفتاوى",
+      "articles": "المقالات",
+      "books": "الكتب والرسائل",
+      "attachments": "اجمالى المرفقات",
+      "visits": "عدد الزيارات"
     }
   },
   "pages": {

@@ -3,6 +3,7 @@
 import { HeroSection } from "./HeroSection";
 import LastPublished from "./LastPublished";
 import MoreWatched from "./MoreWatched";
+import Statistics from "./Statistics";
 
 const Home = () => {
   return (
@@ -10,6 +11,7 @@ const Home = () => {
       <HeroSection />
       <LastPublished />
       <MoreWatched />
+      <Statistics />
     </div>
   );
 };
