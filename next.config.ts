@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   webpack: (config) => {
+    config.cache = false;
     config.resolve.alias = {
       ...config.resolve.alias,
       canvas: canvasStub,
