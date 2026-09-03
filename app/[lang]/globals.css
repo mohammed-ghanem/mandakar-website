@@ -171,10 +171,10 @@ svg {
   color: #424c61;
 }
 .bkMainColor {
-  background: #FBF9F5;
+  background: #fbf9f5;
 }
 .lightColor {
-  color: #FBF9F5;
+  color: #fbf9f5;
 }
 .grayColor {
   color: #3f3e3e;
@@ -208,6 +208,11 @@ svg {
   background-color: #9d732c;
 }
 
+/* Category detail tabs — Figma Gradient2: lighter gold → #9d732c */
+.categoryTabActiveBg {
+  background: linear-gradient(180deg, #b0894a 0%, #9d732c 100%);
+}
+
 .lightBgColor {
   background: #f5f3ed;
 }
@@ -227,4 +232,28 @@ svg {
 /* Sonner toasts — same family as root (IBM Plex Sans Arabic from imports above) */
 .fontCairo {
   font-family: "IBM Plex Sans Arabic", sans-serif;
+}
+.bgNavbarColor {
+  background: #e6d6c0;
+}
+.audioPlayerBg {
+  background: #F1E9DA;
+}
+
+.categoryBoxScroll [data-slot="scroll-area-scrollbar"] {
+  width: 2px !important;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.categoryBoxScroll [data-slot="scroll-area-scrollbar"][data-orientation="vertical"] {
+  inset-inline-start: auto;
+  inset-inline-end: 2px;
+  right: auto;
+}
+
+.categoryBoxScroll [data-slot="scroll-area-thumb"] {
+  background: #9d732c !important;
+  border-radius: 999px;
 }

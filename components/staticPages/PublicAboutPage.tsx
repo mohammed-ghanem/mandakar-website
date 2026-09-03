@@ -3,18 +3,18 @@
 import PublicStaticPage from "@/components/staticPages/PublicStaticPage";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
-import { useGetStaticPrivacyPolicyQuery } from "@/store/staticPages/staticPagesApi";
+import { useGetStaticAboutQuery } from "@/store/staticPages/staticPagesApi";
 
-const PublicPrivacyPolicy = () => {
+const PublicAboutPage = () => {
   const lang = LangUseParams();
   const translate = TranslateHook();
-  const { data, isLoading, isError, refetch } = useGetStaticPrivacyPolicyQuery({
+  const { data, isLoading, isError, refetch } = useGetStaticAboutQuery({
     lang: lang ?? "ar",
   });
 
   return (
     <PublicStaticPage
-      page={translate?.pages?.privacyPolicyPage}
+      page={translate?.pages?.aboutPage}
       html={data?.html}
       isLoading={isLoading}
       isError={isError}
@@ -23,4 +23,4 @@ const PublicPrivacyPolicy = () => {
   );
 };
 
-export default PublicPrivacyPolicy;
+export default PublicAboutPage;

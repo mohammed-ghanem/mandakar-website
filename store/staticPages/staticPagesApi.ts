@@ -8,7 +8,8 @@ export const staticPagesApi = createApi({
     baseQuery: axiosBaseQuery(),
     tagTypes: [
         "StaticPrivacyPolicy",
-        "StaticTermsAndConditions", 
+        "StaticTermsAndConditions",
+        "StaticAbout",
     ],
     endpoints: (builder) => ({
         getStaticPrivacyPolicy: builder.query<
@@ -53,11 +54,32 @@ export const staticPagesApi = createApi({
             providesTags: ["StaticTermsAndConditions"],
         }),
 
+        getStaticAbout: builder.query<
+            StaticPageHtml,
+            { lang: string }
+        >({
+            query: ({ lang }) => ({
+                url: "/static-pages/about",
+                method: "GET",
+                headers: {
+                    "Accept-Language": lang,
+                },
+            }),
+            transformResponse: (response: unknown): StaticPageHtml => {
+                const r = response as { data?: unknown };
+                const raw = r?.data;
+                return {
+                    html: typeof raw === "string" ? raw : "",
+                };
+            },
+            providesTags: ["StaticAbout"],
+        }),
+
     }),
 });
 
 export const {
     useGetStaticPrivacyPolicyQuery,
     useGetStaticTermsAndConditionsQuery,
-   
+    useGetStaticAboutQuery,
 } = staticPagesApi;

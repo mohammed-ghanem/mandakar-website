@@ -13,8 +13,8 @@ const Navbar = () => {
 
   const navLinks = [
     { label: navbar?.home, href: `/${lang}` },
-    { label: navbar?.about, href: `/${lang}` },
-    { label: navbar?.scholarly, href: `/${lang}` },
+    { label: navbar?.about, href: `/${lang}/about` },
+    { label: navbar?.scholarly, href: `/${lang}/scholarly` },
     { label: navbar?.lectures, href: `/${lang}` },
     { label: navbar?.khutbas, href: `/${lang}` },
     { label: navbar?.fatwas, href: `/${lang}` },

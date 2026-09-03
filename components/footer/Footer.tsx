@@ -16,15 +16,15 @@ const Footer = () => {
 
   const mainLinks = [
     { label: navbar?.home, href: `/${lang}` },
-    { label: navbar?.about, href: `/${lang}` },
-    { label: navbar?.scholarly, href: `/${lang}` },
+    { label: navbar?.about, href: `/${lang}/about` },
+    { label: navbar?.scholarly, href: `/${lang}/scholarly` },
     { label: navbar?.lectures, href: `/${lang}` },
     { label: navbar?.khutbas, href: `/${lang}` },
     { label: navbar?.fatwas, href: `/${lang}` },
     { label: navbar?.articles, href: `/${lang}` },
     { label: navbar?.books, href: `/${lang}` },
-    { label: navbar?.privacyPolicy, href: `/${lang}` },
-    { label: navbar?.termsAndConditions, href: `/${lang}` },
+    { label: navbar?.privacyPolicy, href: `/${lang}/privacy-policy` },
+    { label: navbar?.termsAndConditions, href: `/${lang}/terms-and-conditions` },
   ];
 
   const linkClassName =

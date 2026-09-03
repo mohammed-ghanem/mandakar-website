@@ -44,7 +44,8 @@
       "books": "Books and Letters",
       "attachments": "Total Attachments",
       "visits": "Visits"
-    }
+    },
+    "shareVia": "Share via:"
   },
   "pages": {
     "contactUs": {
@@ -78,14 +79,46 @@
       "titleSpan": "Policy",
       "loading": "Loading…",
       "empty": "No content is available at the moment.",
-      "error": "We could not load this page. Please try again later."
+      "error": "We could not load this page. Please try again later.",
+      "retry": "Try again"
+    },
+    "scholarlyPage": {
+      "title": "Scholarly Commentaries",
+      "contentSoon": "Content will appear here later.",
+      "notFound": "This section was not found.",
+      "categoriesTab": "Categories",
+      "otherTopicsTab": "Other topics",
+      "content": {
+        "download": "Download",
+        "aboutLesson": "About the lesson",
+        "readMore": "Read more",
+        "readLess": "Show less",
+        "attachedFiles": "Attached files",
+        "externalLinks": "External links",
+        "completeSeries": "Continue the series",
+        "relatedTopics": "Related topics",
+        "previous": "Previous",
+        "next": "Next",
+        "play": "Play",
+        "pause": "Pause",
+        "views": "views"
+      }
     },
     "termsAndConditionsPage": {
       "title": "Terms and ",
       "titleSpan": "Conditions",
       "loading": "Loading…",
       "empty": "No content is available at the moment.",
-      "error": "We could not load this page. Please try again later."
+      "error": "We could not load this page. Please try again later.",
+      "retry": "Try again"
+    },
+    "aboutPage": {
+      "title": "About the ",
+      "titleSpan": "Sheikh",
+      "loading": "Loading…",
+      "empty": "No content is available at the moment.",
+      "error": "We could not load this page. Please try again later.",
+      "retry": "Try again"
     }
   },
   "settings": {

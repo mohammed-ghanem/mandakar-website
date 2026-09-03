@@ -9,10 +9,9 @@ import { getSiteUrl } from "@/lib/siteUrl";
  */
 const STATIC_PATHS = [
   "",
-  // "/contact-us",
-  // "/privacy-policy",
-  // "/terms-and-conditions",
-  // "/delete-account",
+  "/about",
+  "/privacy-policy",
+  "/terms-and-conditions",
 ] as const;
 
 function absoluteUrl(locale: string, path: string): string {
