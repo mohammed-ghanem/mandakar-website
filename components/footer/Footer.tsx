@@ -1,11 +1,15 @@
 "use client";
 
-import SocialLinks from "../socialLinks/SocialLinks";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import Image from "next/image";
 import qfooter from "@/public/assets/images/qfooter.png";
 import copyright from "@/public/assets/images/copyright.png";
+import facebook from "@/public/assets/images/facebook.svg";
+import twitter from "@/public/assets/images/twitter.svg";
+import instagram from "@/public/assets/images/instagram.svg";
+import youtube from "@/public/assets/images/youtube.svg";
+import telegram from "@/public/assets/images/telegram.svg";
 import Link from "next/link";
 import ScrollToTop from "../ScrollToTop/ScrollToTop";
 
@@ -13,16 +17,23 @@ const Footer = () => {
   const lang = LangUseParams();
   const translate = TranslateHook();
   const navbar = translate?.home?.navbar;
+  const footerSocialIcons = [
+    { icon: facebook, alt: "Facebook", width: 10, height: 20 },
+    { icon: twitter, alt: "X", width: 20, height: 20 },
+    { icon: instagram, alt: "Instagram", width: 20, height: 20 },
+    { icon: youtube, alt: "YouTube", width: 20, height: 20 },
+    { icon: telegram, alt: "Telegram", width: 20, height: 20 },
+  ];
 
   const mainLinks = [
     { label: navbar?.home, href: `/${lang}` },
     { label: navbar?.about, href: `/${lang}/about` },
     { label: navbar?.scholarly, href: `/${lang}/scholarly` },
-    { label: navbar?.lectures, href: `/${lang}` },
-    { label: navbar?.khutbas, href: `/${lang}` },
-    { label: navbar?.fatwas, href: `/${lang}` },
-    { label: navbar?.articles, href: `/${lang}` },
-    { label: navbar?.books, href: `/${lang}` },
+    { label: navbar?.lectures, href: `/${lang}/lectures` },
+    { label: navbar?.khutbas, href: `/${lang}/khutbas` },
+    { label: navbar?.fatwas, href: `/${lang}/fatwas` },
+    { label: navbar?.articles, href: `/${lang}/articles` },
+    { label: navbar?.books, href: `/${lang}/books` },
     { label: navbar?.privacyPolicy, href: `/${lang}/privacy-policy` },
     { label: navbar?.termsAndConditions, href: `/${lang}/terms-and-conditions` },
   ];
@@ -52,7 +63,21 @@ const Footer = () => {
         </nav>
 
         <div className="mt-4 flex justify-center">
-          <SocialLinks className="rounded-full" />
+          <div className="flex items-center gap-2">
+            {footerSocialIcons.map((item) => (
+              <span
+                key={item.alt}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-transparent"
+              >
+                <Image
+                  src={item.icon}
+                  alt={item.alt}
+                  width={item.width}
+                  height={item.height}
+                />
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="mt-6 pb-4 text-center text-xs font-bold text-white sm:text-sm">

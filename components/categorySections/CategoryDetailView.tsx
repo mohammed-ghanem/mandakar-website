@@ -13,14 +13,26 @@ type CategoryDetailViewProps = {
   node: CategoryItem;
   trail: CategoryItem[];
   rootHref: string;
+  pageKey?:
+    | "scholarlyPage"
+    | "lecturesPage"
+    | "khutbasPage"
+    | "fatwasPage"
+    | "articlesPage"
+    | "booksPage";
 };
 
 type DetailTab = "categories" | "topics";
 
-const CategoryDetailView = ({ node, trail, rootHref }: CategoryDetailViewProps) => {
+const CategoryDetailView = ({
+  node,
+  trail,
+  rootHref,
+  pageKey = "scholarlyPage",
+}: CategoryDetailViewProps) => {
   const lang = LangUseParams();
   const translate = TranslateHook();
-  const page = translate.pages.scholarlyPage;
+  const page = translate.pages[pageKey];
   const homeLabel = translate.home.navbar.home;
   const children = node.children ?? [];
   const topics = node.topics ?? [];

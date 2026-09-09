@@ -10,6 +10,12 @@ import { getSiteUrl } from "@/lib/siteUrl";
 const STATIC_PATHS = [
   "",
   "/about",
+  "/articles",
+  "/books",
+  "/fatwas",
+  "/khutbas",
+  "/lectures",
+  "/scholarly",
   "/privacy-policy",
   "/terms-and-conditions",
 ] as const;

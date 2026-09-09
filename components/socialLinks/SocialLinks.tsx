@@ -23,13 +23,29 @@ const socialLinks = [
   { icon: facebook, Button: FacebookShareButton },
 ] as const;
 
-const SocialLinks = ({ className = "" }: { className?: string }) => {
+type SocialLinksProps = {
+  className?: string;
+  iconClassName?: string;
+  showLabel?: boolean;
+  wrapperClassName?: string;
+  withDefaultBackground?: boolean;
+};
+
+const SocialLinks = ({
+  className = "",
+  iconClassName = "scoundBgColor",
+  showLabel = true,
+  wrapperClassName = "",
+  withDefaultBackground = true,
+}: SocialLinksProps) => {
   const translate = TranslateHook();
   const url = typeof window !== "undefined" ? window.location.href : "";
 
   return (
-    <div className="mt-0.5 flex flex-wrap items-center gap-1">
-      <p className="shrink-0 whitespace-nowrap">{translate.home.shareVia}</p>
+    <div className={`mt-0.5 flex flex-wrap items-center gap-1 ${wrapperClassName}`}>
+      {showLabel && (
+        <p className="shrink-0 whitespace-nowrap">{translate.home.shareVia}</p>
+      )}
       {socialLinks.map((item, index) => (
         <item.Button
           key={index}
@@ -37,7 +53,7 @@ const SocialLinks = ({ className = "" }: { className?: string }) => {
           className="border-0 bg-transparent p-0"
         >
           <span
-            className={`flex h-10 w-10 items-center justify-center border scoundBgColor ${className}`}
+            className={`flex h-10 w-10 items-center justify-center border ${withDefaultBackground ? "scoundBgColor" : ""} ${className} ${iconClassName}`}
           >
             <Image
               src={item.icon}

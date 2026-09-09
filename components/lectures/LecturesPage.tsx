@@ -5,14 +5,14 @@ import CategorySections from "@/components/categorySections/CategorySections";
 import CategorySectionsSkeleton from "@/components/skeletons/CategorySectionsSkeleton";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
-import { useGetScholarlyCategoriesQuery } from "@/store/scholarly/scholarlyApi";
+import { useGetLectureCategoriesQuery } from "@/store/lectures/lecturesApi";
 
-const ScholarlyPage = () => {
+const LecturesPage = () => {
   const lang = LangUseParams();
   const translate = TranslateHook();
-  const page = translate?.pages?.scholarlyPage;
+  const page = translate?.pages?.lecturesPage;
   const homeLabel = translate?.home?.navbar?.home;
-  const { data, isLoading } = useGetScholarlyCategoriesQuery({
+  const { data, isLoading } = useGetLectureCategoriesQuery({
     lang: lang ?? "ar",
   });
 
@@ -25,19 +25,11 @@ const ScholarlyPage = () => {
       <div className="bgNavbarColor">
         <nav
           aria-label="breadcrumb"
-          className=" mb-6 flex flex-wrap items-center gap-2 text-sm font-semibold  
-          sm:mb-8 sm:text-xs container mx-auto w-[80%] py-2"
+          className=" container mx-auto mb-6 flex w-[80%] flex-wrap items-center gap-2 py-2 text-sm font-semibold sm:mb-8 sm:text-xs"
         >
-          <Link
-            href={`/${lang}`}
-            className=""
-          >
-            {homeLabel}
-          </Link>
-          <span aria-hidden className="">
-            {">"}
-          </span>
-          <span>{page?.title}</span>
+          <Link href={`/${lang}`}>{homeLabel}</Link>
+          <span aria-hidden>{">"}</span>
+          <span>{page.title}</span>
         </nav>
       </div>
 
@@ -48,4 +40,4 @@ const ScholarlyPage = () => {
   );
 };
 
-export default ScholarlyPage;
+export default LecturesPage;

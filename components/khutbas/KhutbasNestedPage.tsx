@@ -16,49 +16,49 @@ import { useAppSelector } from "@/store/hooks";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import {
-  buildCategoryHref,
-  scholarlyApi,
-  useGetScholarlyCategoryQuery,
-  useGetScholarlyExplanationQuery,
-} from "@/store/scholarly/scholarlyApi";
+  buildKhutbaCategoryHref,
+  speechesApi,
+  useGetSpeechCategoryQuery,
+  useGetSpeechContentQuery,
+} from "@/store/speeches/speechesApi";
 
-type ScholarlyNestedPageProps = {
+type KhutbasNestedPageProps = {
   slug: string[];
 };
 
-const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
+const KhutbasNestedPage = ({ slug }: KhutbasNestedPageProps) => {
   const lang = LangUseParams();
   const translate = TranslateHook();
-  const page = translate?.pages?.scholarlyPage;
+  const page = translate?.pages?.khutbasPage;
   const homeLabel = translate?.home?.navbar?.home;
   const routeId = slug.at(-1) ?? "";
   const categoryIds = slug
     .map((segment) => segment.match(/^category-(\d+)$/)?.[1] ?? null)
     .filter(Boolean) as string[];
-  const explanationMatch = routeId.match(/^explanation-(\d+)$/);
+  const speechMatch = routeId.match(/^speech-(\d+)$/);
   const categoryId = categoryIds.at(-1) ?? "";
   const rootCategoryId = categoryIds[0] ?? "";
-  const explanationId = explanationMatch?.[1] ?? "";
+  const speechId = speechMatch?.[1] ?? "";
   const targetCategoryHref = categoryIds.length
-    ? `/scholarly/${categoryIds.map((id) => `category-${id}`).join("/")}`
+    ? `/khutbas/${categoryIds.map((id) => `category-${id}`).join("/")}`
     : undefined;
   const isApiCategoryRoute = Boolean(categoryIds.length);
-  const isApiExplanationRoute = Boolean(explanationId);
-  const { data: apiCategory, isLoading } = useGetScholarlyCategoryQuery(
+  const isApiSpeechRoute = Boolean(speechId);
+
+  const { data: apiCategory, isLoading } = useGetSpeechCategoryQuery(
     { id: rootCategoryId || categoryId, lang: lang ?? "ar" },
     { skip: !isApiCategoryRoute },
   );
-  const { data: apiExplanation, isLoading: isExplanationLoading } =
-    useGetScholarlyExplanationQuery(
-      { id: explanationId, lang: lang ?? "ar" },
-      { skip: !isApiExplanationRoute },
-    );
+  const { data: apiSpeech, isLoading: isSpeechLoading } = useGetSpeechContentQuery(
+    { id: speechId, lang: lang ?? "ar" },
+    { skip: !isApiSpeechRoute },
+  );
 
   const cachedCategory = useAppSelector((state) => {
     if (!targetCategoryHref) return null;
 
     const queries = Object.values(
-      (state[scholarlyApi.reducerPath]?.queries ?? {}) as Record<
+      (state[speechesApi.reducerPath]?.queries ?? {}) as Record<
         string,
         { data?: unknown }
       >,
@@ -92,26 +92,28 @@ const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
   if (
     !page ||
     (isApiCategoryRoute && isLoading) ||
-    (isApiExplanationRoute && isExplanationLoading)
+    (isApiSpeechRoute && isSpeechLoading)
   ) {
     let variant: "tabs" | "boxes" | "topics" | "content" =
-      isApiExplanationRoute ? "content" : "boxes";
+      isApiSpeechRoute ? "content" : "boxes";
+
     if (resolvedCategory) {
       if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory)) variant = "tabs";
       else if (hasChildren(resolvedCategory)) variant = "boxes";
       else if (hasTopics(resolvedCategory)) variant = "topics";
     }
+
     return <CategoryDetailSkeleton variant={variant} />;
   }
 
-  if (isApiExplanationRoute && apiExplanation) {
-    const title = apiExplanation.content.title;
+  if (isApiSpeechRoute && apiSpeech) {
+    const title = apiSpeech.content.title;
     const crumbs = [
       { label: homeLabel, href: `/${lang}` },
-      { label: page.title, href: `/${lang}/scholarly` },
-      ...apiExplanation.trail.map((item, index) => ({
+      { label: page.title, href: `/${lang}/khutbas` },
+      ...apiSpeech.trail.map((item, index) => ({
         label: item.title,
-        href: `/${lang}/scholarly/${apiExplanation.trail
+        href: `/${lang}/khutbas/${apiSpeech.trail
           .slice(0, index + 1)
           .map((entry) => `category-${entry.id}`)
           .join("/")}`,
@@ -121,7 +123,11 @@ const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
 
     return (
       <CategoryPageLayout crumbs={crumbs}>
-        <CategoryContentView title={title} content={apiExplanation.content} />
+        <CategoryContentView
+          title={title}
+          content={apiSpeech.content}
+          pageKey="khutbasPage"
+        />
       </CategoryPageLayout>
     );
   }
@@ -132,7 +138,8 @@ const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
         <CategoryDetailView
           node={resolvedCategory}
           trail={resolvedTrail}
-          rootHref="/scholarly"
+          rootHref="/khutbas"
+          pageKey="khutbasPage"
         />
       );
     }
@@ -142,7 +149,7 @@ const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
         title={resolvedCategory.title}
         crumbs={[
           { label: homeLabel, href: `/${lang}` },
-          { label: page.title, href: `/${lang}/scholarly` },
+          { label: page.title, href: `/${lang}/khutbas` },
           ...resolvedTrail.slice(0, -1).map((item) => ({
             label: item.title,
             href: `/${lang}${item.href}`,
@@ -154,27 +161,11 @@ const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
     );
   }
 
-  if (isApiExplanationRoute && !apiExplanation) {
-    return (
-      <CategoryPageLayout crumbs={[{ label: homeLabel }, { label: page.title }]}>
-        <p className="text-center text-sm grayColor">{page.notFound}</p>
-      </CategoryPageLayout>
-    );
-  }
-
-  if (isApiCategoryRoute && !resolvedCategory) {
-    return (
-      <CategoryPageLayout crumbs={[{ label: homeLabel }, { label: page.title }]}>
-        <p className="text-center text-sm grayColor">{page.notFound}</p>
-      </CategoryPageLayout>
-    );
-  }
-
   return (
-    <CategoryPageLayout crumbs={[{ label: homeLabel }, { label: page.title }]}>
-      <p className="text-center text-sm grayColor">{page.notFound}</p>
+    <CategoryPageLayout crumbs={[{ label: homeLabel }, { label: page?.title ?? "" }]}>
+      <p className="text-center text-sm grayColor">{page?.notFound}</p>
     </CategoryPageLayout>
   );
 };
 
-export default ScholarlyNestedPage;
+export default KhutbasNestedPage;

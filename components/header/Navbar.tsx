@@ -15,11 +15,11 @@ const Navbar = () => {
     { label: navbar?.home, href: `/${lang}` },
     { label: navbar?.about, href: `/${lang}/about` },
     { label: navbar?.scholarly, href: `/${lang}/scholarly` },
-    { label: navbar?.lectures, href: `/${lang}` },
-    { label: navbar?.khutbas, href: `/${lang}` },
-    { label: navbar?.fatwas, href: `/${lang}` },
-    { label: navbar?.articles, href: `/${lang}` },
-    { label: navbar?.books, href: `/${lang}` },
+    { label: navbar?.lectures, href: `/${lang}/lectures` },
+    { label: navbar?.khutbas, href: `/${lang}/khutbas` },
+    { label: navbar?.fatwas, href: `/${lang}/fatwas` },
+    { label: navbar?.articles, href: `/${lang}/articles` },
+    { label: navbar?.books, href: `/${lang}/books` },
   ];
 
   const linkClassName =
