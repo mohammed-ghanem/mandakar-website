@@ -5,7 +5,7 @@ import { buildPageMetadata } from "@/lib/contentMetadata";
 export const metadata: Metadata = buildPageMetadata({
   title: "الشروط والأحكام",
   description:
-    "الشروط والأحكام الخاصة بموقع التراث العلمى للشيخ فلاح مندكار.",
+    "الشروط والأحكام الخاصة بموقع التراث العلمى للشيخ الدكتور فلاح مندكار.",
   path: "/terms-and-conditions",
 });
 
