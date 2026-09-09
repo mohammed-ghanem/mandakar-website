@@ -1,12 +1,13 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import PublicTermsAndConditions from "@/components/settings/terms-and-conditions/PublicTermsAndConditions";
+import { buildPageMetadata } from "@/lib/contentMetadata";
 
-export const metadata: Metadata = {
-  title: "الشروط والأحكام - التراث العلمى للشيخ فلاح مندكار",
+export const metadata: Metadata = buildPageMetadata({
+  title: "الشروط والأحكام",
   description:
     "الشروط والأحكام الخاصة بموقع التراث العلمى للشيخ فلاح مندكار.",
-  robots: "index, follow",
-};
+  path: "/terms-and-conditions",
+});
 
 export default function TermsAndConditionsPage() {
   return <PublicTermsAndConditions />;

@@ -542,7 +542,10 @@ const CategoryContentView = ({
         </article>
 
         <div className="flex justify-center">
-          <SocialLinks className="rounded-full scoundBgColor" />
+          <SocialLinks
+            className="rounded-full scoundBgColor"
+            title={lessonTitle}
+          />
         </div>
 
         {hasRelatedTopics && (

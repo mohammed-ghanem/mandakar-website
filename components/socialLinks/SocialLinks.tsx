@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   FacebookShareButton,
@@ -15,20 +16,14 @@ import mail from "@/public/assets/images/mail.svg";
 import telegram from "@/public/assets/images/telegram.svg";
 import whatsapp from "@/public/assets/images/whatsapp.svg";
 
-const socialLinks = [
-  { icon: telegram, Button: TelegramShareButton },
-  { icon: mail, Button: EmailShareButton },
-  { icon: whatsapp, Button: WhatsappShareButton },
-  { icon: twitter, Button: XShareButton },
-  { icon: facebook, Button: FacebookShareButton },
-] as const;
-
 type SocialLinksProps = {
   className?: string;
   iconClassName?: string;
   showLabel?: boolean;
   wrapperClassName?: string;
   withDefaultBackground?: boolean;
+  url?: string;
+  title?: string;
 };
 
 const SocialLinks = ({
@@ -37,33 +32,84 @@ const SocialLinks = ({
   showLabel = true,
   wrapperClassName = "",
   withDefaultBackground = true,
+  url,
+  title = "",
 }: SocialLinksProps) => {
   const translate = TranslateHook();
-  const url = typeof window !== "undefined" ? window.location.href : "";
+  const [shareUrl, setShareUrl] = useState(url ?? "");
+
+  useEffect(() => {
+    if (url) {
+      setShareUrl(url);
+      return;
+    }
+    setShareUrl(window.location.href);
+  }, [url]);
+
+  if (!shareUrl) return null;
+
+  const iconWrapClass = `flex h-10 w-10 items-center justify-center border ${
+    withDefaultBackground ? "scoundBgColor" : ""
+  } ${className} ${iconClassName}`;
 
   return (
-    <div className={`mt-0.5 flex flex-wrap items-center gap-1 ${wrapperClassName}`}>
+    <div
+      className={`mt-0.5 flex flex-wrap items-center gap-1 ${wrapperClassName}`}
+    >
       {showLabel && (
         <p className="shrink-0 whitespace-nowrap">{translate.home.shareVia}</p>
       )}
-      {socialLinks.map((item, index) => (
-        <item.Button
-          key={index}
-          url={url}
-          className="border-0 bg-transparent p-0"
-        >
-          <span
-            className={`flex h-10 w-10 items-center justify-center border ${withDefaultBackground ? "scoundBgColor" : ""} ${className} ${iconClassName}`}
-          >
-            <Image
-              src={item.icon}
-              alt="icon"
-              width={item.icon === facebook ? 10 : 20}
-              height={item.icon === facebook ? 10 : 20}
-            />
-          </span>
-        </item.Button>
-      ))}
+
+      <TelegramShareButton
+        url={shareUrl}
+        title={title}
+        className="border-0 bg-transparent p-0"
+      >
+        <span className={iconWrapClass}>
+          <Image src={telegram} alt="Telegram" width={20} height={20} />
+        </span>
+      </TelegramShareButton>
+
+      <EmailShareButton
+        url={shareUrl}
+        subject={title}
+        body={title ? `${title}\n${shareUrl}` : shareUrl}
+        className="border-0 bg-transparent p-0"
+      >
+        <span className={iconWrapClass}>
+          <Image src={mail} alt="Email" width={20} height={20} />
+        </span>
+      </EmailShareButton>
+
+      <WhatsappShareButton
+        url={shareUrl}
+        title={title}
+        separator=" - "
+        className="border-0 bg-transparent p-0"
+      >
+        <span className={iconWrapClass}>
+          <Image src={whatsapp} alt="WhatsApp" width={20} height={20} />
+        </span>
+      </WhatsappShareButton>
+
+      <XShareButton
+        url={shareUrl}
+        title={title}
+        className="border-0 bg-transparent p-0"
+      >
+        <span className={iconWrapClass}>
+          <Image src={twitter} alt="X" width={20} height={20} />
+        </span>
+      </XShareButton>
+
+      <FacebookShareButton
+        url={shareUrl}
+        className="border-0 bg-transparent p-0"
+      >
+        <span className={iconWrapClass}>
+          <Image src={facebook} alt="Facebook" width={10} height={20} />
+        </span>
+      </FacebookShareButton>
     </div>
   );
 };

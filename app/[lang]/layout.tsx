@@ -5,22 +5,29 @@ import { ReactNode } from "react";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import { getSiteUrl } from "@/lib/siteUrl";
+import {
+  SITE_DESCRIPTION,
+  SITE_KEYWORDS,
+  SITE_TITLE,
+  getDefaultOgImage,
+} from "@/lib/siteMetadata";
+
+const site = getSiteUrl();
+const ogImage = getDefaultOgImage();
 
 export const metadata: Metadata = {
-  title: "التراث العلمى للشيخ فلاح مندكار",
-  description:
-    "التراث العلمى للشيخ فلاح مندكار رحمة الله تعالى مكتبة علمية رقمية تضم الخطب والمحاضرات والدروس والمقالات والكتب والفتاوى، لتكون مرجعًا علميًا يسهل الوصول إليه والاستفادة منه.",
-  keywords: [
-    "التراث العلمى للشيخ فلاح مندكار",
-    "التراث العلمى للشيخ فلاح مندكار رحمة الله تعالى",
-    "التراث العلمى للشيخ فلاح مندكار مكتبة علمية رقمية",
-    "التراث العلمى للشيخ فلاح مندكار الخطب والمحاضرات والدروس والمقالات والكتب والفتاوى",
-    "التراث العلمى للشيخ فلاح مندكار تكون مرجعًا علميًا يسهل الوصول إليه والاستفادة منه.",
-  ],
+  metadataBase: new URL(site),
+  title: {
+    default: SITE_TITLE,
+    template: `%s - ${SITE_TITLE}`,
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [...SITE_KEYWORDS],
   authors: [
     {
-      name: "التراث العلمى للشيخ فلاح مندكار",
-      url: "https://mandekar.net",
+      name: SITE_TITLE,
+      url: site,
     },
   ],
   icons: {
@@ -28,17 +35,16 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
   },
   openGraph: {
-    title: "التراث العلمى للشيخ فلاح مندكار",
-    description:
-      "التراث العلمى للشيخ فلاح مندكار رحمة الله تعالى مكتبة علمية رقمية تضم الخطب والمحاضرات والدروس والمقالات والكتب والفتاوى، لتكون مرجعًا علميًا يسهل الوصول إليه والاستفادة منه.",
-    url: "https://mandekar.net",
-    siteName: "التراث العلمى للشيخ فلاح مندكار",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: site,
+    siteName: SITE_TITLE,
     locale: "ar",
     type: "website",
     images: [
       {
-        url: "https://mandekar.net/assets/images/meta.png",
-        alt: "التراث العلمى للشيخ فلاح مندكار",
+        url: ogImage,
+        alt: SITE_TITLE,
         width: 1200,
         height: 630,
       },
@@ -46,13 +52,12 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "التراث العلمى للشيخ فلاح مندكار",
-    description:
-      "التراث العلمى للشيخ فلاح مندكار رحمة الله تعالى مكتبة علمية رقمية تضم الخطب والمحاضرات والدروس والمقالات والكتب والفتاوى، لتكون مرجعًا علميًا يسهل الوصول إليه والاستفادة منه.",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     images: [
       {
-        url: "https://mandekar.net/assets/images/meta.png",
-        alt: "اكاديمية سرج للدرسات والابحاث الفكرية المعاصرة",
+        url: ogImage,
+        alt: SITE_TITLE,
       },
     ],
   },
@@ -74,7 +79,7 @@ export default async function RootLayout({
         <Providers>
           <div className="">
             <div>
-                <Header />
+              <Header />
               <main>
                 <div className="mx-auto">{children}</div>
               </main>

@@ -4,6 +4,6 @@
  */
 export function getSiteUrl(): string {
   return (
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://mandakar.net"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mandakar.net"
   ).replace(/\/$/, "");
 }
