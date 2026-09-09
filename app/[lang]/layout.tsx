@@ -4,6 +4,7 @@ import { Providers } from "../../providers/Providers";
 import { ReactNode } from "react";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 
 export const metadata: Metadata = {
   title: "التراث العلمى للشيخ فلاح مندكار",
@@ -81,6 +82,7 @@ export default async function RootLayout({
             </div>
           </div>
         </Providers>
+        <GoogleAnalytics />
       </body>
     </html>
   );
