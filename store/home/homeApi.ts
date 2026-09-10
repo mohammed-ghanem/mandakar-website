@@ -1,5 +1,27 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "@/store/base/axiosBaseQuery";
+import type { ReuseBoxItem } from "@/components/reusebox/types";
+import { buildExplanationHref, buildCategoryHref } from "@/store/scholarly/scholarlyApi";
+import {
+  buildLectureHref,
+  buildLectureCategoryHref,
+} from "@/store/lectures/lecturesApi";
+import {
+  buildKhutbaHref,
+  buildKhutbaCategoryHref,
+} from "@/store/speeches/speechesApi";
+import {
+  buildFatwaHref,
+  buildFatwaCategoryHref,
+} from "@/store/fatwas/fatwasApi";
+import {
+  buildArticleHref,
+  buildArticleCategoryHref,
+} from "@/store/articles/articlesApi";
+import {
+  buildBookHref,
+  buildBookCategoryHref,
+} from "@/store/books/booksApi";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const HOME_API_BASE = `${BASE_URL}/client-api/v1/home`;
@@ -28,6 +50,47 @@ type ApiBannersResponse = {
   };
 };
 
+type ApiLatestItem = {
+  id: string | number;
+  content_type?: string;
+  rank?: number;
+  media_kind?: string;
+  category_id?: string | number;
+  category?: {
+    id?: string | number;
+    name?: ApiLocalizedText;
+    _name?: string;
+  } | null;
+  title?: ApiLocalizedText | string;
+  _title?: string;
+  image?: string | null;
+  audio?: string | null;
+  youtube_url?: string | null;
+  has_audio?: boolean;
+  has_video?: boolean;
+  views_count?: number;
+  created_at?: string;
+};
+
+type ApiLatestPublishedResponse = {
+  data?: {
+    explanations?: ApiLatestItem[];
+    lectures?: ApiLatestItem[];
+    speeches?: ApiLatestItem[];
+    fatwas?: ApiLatestItem[];
+    articles?: ApiLatestItem[];
+    books?: ApiLatestItem[];
+  };
+};
+
+type ApiMostViewedResponse = {
+  data?: {
+    audio_visual?: ApiLatestItem[];
+    articles?: ApiLatestItem[];
+    books?: ApiLatestItem[];
+  };
+};
+
 export type HomeBanner = {
   id: string | number;
   title: string;
@@ -37,6 +100,47 @@ export type HomeBanner = {
   href: string;
   image: string;
   sortOrder: number;
+};
+
+export type HomeLatestPublished = {
+  explanations: ReuseBoxItem[];
+  lectures: ReuseBoxItem[];
+  speeches: ReuseBoxItem[];
+  fatwas: ReuseBoxItem[];
+  articles: ReuseBoxItem[];
+  books: ReuseBoxItem[];
+};
+
+export type HomeMostViewed = {
+  audioVisual: ReuseBoxItem[];
+  articles: ReuseBoxItem[];
+  books: ReuseBoxItem[];
+};
+
+type ApiStatisticsResponse = {
+  data?: {
+    statistics?: {
+      explanations?: number;
+      lectures?: number;
+      speeches?: number;
+      fatwas?: number;
+      articles?: number;
+      books?: number;
+      total_attachments?: number;
+      total_visits?: number;
+    };
+  };
+};
+
+export type HomeStatistics = {
+  scholarly: number;
+  lectures: number;
+  khutbas: number;
+  fatwas: number;
+  articles: number;
+  books: number;
+  attachments: number;
+  visits: number;
 };
 
 const getLocalizedText = (
@@ -65,13 +169,132 @@ const toLocalizedHref = (url: string | null | undefined, lang: string) => {
   }
 };
 
+const withLang = (lang: string, path: string) => {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return `/${lang}${normalized}`;
+};
+
 const sortByOrder = <T extends { sort_order?: number }>(items: T[] = []) =>
   [...items].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+
+const mapLatestItem = (
+  item: ApiLatestItem,
+  lang: string,
+  buildContentHref: (id: string | number) => string,
+  buildCategoryHrefFn: (id: string | number) => string,
+): ReuseBoxItem => {
+  const contentTitle = getLocalizedText(item.title, item._title, lang);
+  const categoryTitle = getLocalizedText(
+    item.category?.name,
+    item.category?._name,
+    lang,
+  );
+  const categoryId = item.category?.id ?? item.category_id;
+  const contentHref = withLang(lang, buildContentHref(item.id));
+  const categoryHref = categoryId
+    ? withLang(lang, buildCategoryHrefFn(categoryId))
+    : contentHref;
+
+  const base = {
+    id: item.id,
+    subtitle: categoryTitle || contentTitle,
+    title: contentTitle,
+    subtitleHref: categoryHref,
+    titleHref: contentHref,
+  };
+
+  if (item.has_video && item.youtube_url) {
+    return {
+      ...base,
+      type: "video",
+      youtubeUrl: item.youtube_url,
+    };
+  }
+
+  if (item.has_audio && item.audio) {
+    return {
+      ...base,
+      type: "audio",
+      audioUrl: item.audio,
+      downloadUrl: item.audio,
+      progress: 0,
+    };
+  }
+
+  return {
+    ...base,
+    type: "pdf",
+    downloadUrl: contentHref,
+    viewUrl: contentHref,
+  };
+};
+
+const mapLatestList = (
+  items: ApiLatestItem[] | undefined,
+  lang: string,
+  buildContentHref: (id: string | number) => string,
+  buildCategoryHrefFn: (id: string | number) => string,
+) =>
+  (items ?? []).map((item) =>
+    mapLatestItem(item, lang, buildContentHref, buildCategoryHrefFn),
+  );
+
+const getHrefBuildersByContentType = (contentType?: string) => {
+  switch (contentType) {
+    case "lecture":
+      return {
+        content: buildLectureHref,
+        category: buildLectureCategoryHref,
+      };
+    case "speech":
+      return {
+        content: buildKhutbaHref,
+        category: buildKhutbaCategoryHref,
+      };
+    case "fatwa":
+      return {
+        content: buildFatwaHref,
+        category: buildFatwaCategoryHref,
+      };
+    case "article":
+      return {
+        content: buildArticleHref,
+        category: buildArticleCategoryHref,
+      };
+    case "book":
+      return {
+        content: buildBookHref,
+        category: buildBookCategoryHref,
+      };
+    case "explanation":
+    default:
+      return {
+        content: buildExplanationHref,
+        category: buildCategoryHref,
+      };
+  }
+};
+
+const mapMostViewedList = (
+  items: ApiLatestItem[] | undefined,
+  lang: string,
+) =>
+  [...(items ?? [])]
+    .sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))
+    .map((item) => {
+      const builders = getHrefBuildersByContentType(item.content_type);
+      return mapLatestItem(item, lang, builders.content, builders.category);
+    });
 
 export const homeApi = createApi({
   reducerPath: "homeApi",
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["HomeBanners"],
+  tagTypes: [
+    "HomeBanners",
+    "HomeLatestPublished",
+    "HomeMostViewed",
+    "HomeStatistics",
+  ],
   endpoints: (builder) => ({
     getHomeBanners: builder.query<HomeBanner[], { lang: string }>({
       query: ({ lang }) => ({
@@ -100,7 +323,129 @@ export const homeApi = createApi({
       },
       providesTags: ["HomeBanners"],
     }),
+
+    getHomeLatestPublished: builder.query<HomeLatestPublished, { lang: string }>(
+      {
+        query: ({ lang }) => ({
+          url: `${HOME_API_BASE}/latest-published`,
+          method: "GET",
+          headers: {
+            "Accept-Language": lang,
+          },
+        }),
+        transformResponse: (
+          response: unknown,
+          _,
+          arg,
+        ): HomeLatestPublished => {
+          const result = response as ApiLatestPublishedResponse;
+          const data = result?.data ?? {};
+
+          return {
+            explanations: mapLatestList(
+              data.explanations,
+              arg.lang,
+              buildExplanationHref,
+              buildCategoryHref,
+            ),
+            lectures: mapLatestList(
+              data.lectures,
+              arg.lang,
+              buildLectureHref,
+              buildLectureCategoryHref,
+            ),
+            speeches: mapLatestList(
+              data.speeches,
+              arg.lang,
+              buildKhutbaHref,
+              buildKhutbaCategoryHref,
+            ),
+            fatwas: mapLatestList(
+              data.fatwas,
+              arg.lang,
+              buildFatwaHref,
+              buildFatwaCategoryHref,
+            ),
+            articles: mapLatestList(
+              data.articles,
+              arg.lang,
+              buildArticleHref,
+              buildArticleCategoryHref,
+            ),
+            books: mapLatestList(
+              data.books,
+              arg.lang,
+              buildBookHref,
+              buildBookCategoryHref,
+            ),
+          };
+        },
+        providesTags: ["HomeLatestPublished"],
+      },
+    ),
+
+    getHomeMostViewed: builder.query<
+      HomeMostViewed,
+      { lang: string; audioVisualLimit?: number }
+    >({
+      query: ({ lang, audioVisualLimit = 6 }) => ({
+        url: `${HOME_API_BASE}/most-viewed`,
+        method: "GET",
+        params: {
+          audio_visual_limit: audioVisualLimit,
+        },
+        headers: {
+          "Accept-Language": lang,
+        },
+      }),
+      transformResponse: (response: unknown, _, arg): HomeMostViewed => {
+        const result = response as ApiMostViewedResponse;
+        const data = result?.data ?? {};
+        const audioVisualLimit = arg.audioVisualLimit ?? 6;
+
+        return {
+          audioVisual: mapMostViewedList(data.audio_visual, arg.lang).slice(
+            0,
+            audioVisualLimit,
+          ),
+          articles: mapMostViewedList(data.articles, arg.lang),
+          books: mapMostViewedList(data.books, arg.lang),
+        };
+      },
+      providesTags: ["HomeMostViewed"],
+    }),
+
+    getHomeStatistics: builder.query<HomeStatistics, { lang: string }>({
+      query: ({ lang }) => ({
+        url: `${HOME_API_BASE}/statistics`,
+        method: "GET",
+        headers: {
+          "Accept-Language": lang,
+        },
+      }),
+      transformResponse: (response: unknown): HomeStatistics => {
+        const result = response as ApiStatisticsResponse;
+        const stats = result?.data?.statistics ?? {};
+
+        return {
+          scholarly: stats.explanations ?? 0,
+          lectures: stats.lectures ?? 0,
+          khutbas: stats.speeches ?? 0,
+          fatwas: stats.fatwas ?? 0,
+          articles: stats.articles ?? 0,
+          books: stats.books ?? 0,
+          attachments: stats.total_attachments ?? 0,
+          visits: stats.total_visits ?? 0,
+        };
+      },
+      providesTags: ["HomeStatistics"],
+    }),
   }),
 });
 
-export const { useGetHomeBannersQuery } = homeApi;
+export const {
+  useGetHomeBannersQuery,
+  useGetHomeLatestPublishedQuery,
+  useGetHomeMostViewedQuery,
+  useGetHomeStatisticsQuery,
+} = homeApi;

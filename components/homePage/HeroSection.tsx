@@ -49,7 +49,7 @@ export const HeroSection = () => {
       rel="noopener noreferrer"
       className="relative block h-full w-full overflow-hidden rounded-lg"
     >
-      <div className="overlay absolute inset-0 z-5 bg-black/50" />
+      <div className="overlay pointer-events-none absolute inset-0 z-5 bg-black/50" />
       <Image
         src={item.image || defaultImage}
         alt={item.title || "banner"}

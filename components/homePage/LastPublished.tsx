@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import ReuseBox from "@/components/reusebox/ReuseBox";
 import bookOpen from "@/public/assets/images/book.svg";
@@ -11,28 +10,30 @@ import articles from "@/public/assets/images/articles.svg";
 import books from "@/public/assets/images/books.png";
 import qaph from "@/public/assets/images/qaph.svg";
 import TranslateHook from "@/translate/TranslateHook";
+import LangUseParams from "@/translate/LangUseParams";
 import LastPublishedSkeleton from "@/components/skeletons/LastPublishedSkeleton";
-import {
-  scholarlyItems,
-  lectureItems,
-  sermonItems,
-  fatwaItems,
-  articleItems,
-  bookItems,
-} from "./TestData";
+import { useGetHomeLatestPublishedQuery } from "@/store/home/homeApi";
 
 const LastPublished = () => {
   const translate = TranslateHook();
+  const lang = LangUseParams();
   const homeTitles = translate?.home?.homeTitles;
-  const [isReady, setIsReady] = useState(false);
+  const { data, isLoading } = useGetHomeLatestPublishedQuery({
+    lang: lang ?? "ar",
+  });
 
-  useEffect(() => {
-    setIsReady(true);
-  }, []);
-
-  if (!isReady || !homeTitles) {
+  if (isLoading || !homeTitles) {
     return <LastPublishedSkeleton />;
   }
+
+  const latest = data ?? {
+    explanations: [],
+    lectures: [],
+    speeches: [],
+    fatwas: [],
+    articles: [],
+    books: [],
+  };
 
   return (
     <section className="pb-10 relative">
@@ -51,52 +52,46 @@ const LastPublished = () => {
         </h2>
 
         <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
-          {/* Scholarly Items */}
           <ReuseBox
             title={homeTitles?.scholarly}
             icon={<Image src={bookOpen} alt="" width={40} height={40} />}
             showIconBackground={true}
             viewAllText={homeTitles?.viewAll}
-            viewAllHref="/ar"
-            items={scholarlyItems}
+            viewAllHref={`/${lang}/scholarly`}
+            items={latest.explanations}
           />
-          {/* Lectures */}
           <ReuseBox
             title={homeTitles?.lectures}
             icon={<Image src={videoIcon} alt="" width={30} height={30} />}
             showIconBackground={true}
             viewAllText={homeTitles?.viewAll}
-            viewAllHref="/ar"
-            items={lectureItems}
+            viewAllHref={`/${lang}/lectures`}
+            items={latest.lectures}
           />
-          {/* Sermons */}
           <ReuseBox
             title={homeTitles?.khutbas}
             icon={<Image src={audio} alt="" width={30} height={30} />}
             showIconBackground={true}
             viewAllText={homeTitles?.viewAll}
-            viewAllHref="/ar"
-            items={sermonItems}
+            viewAllHref={`/${lang}/khutbas`}
+            items={latest.speeches}
           />
-          {/* Fatwas */}
           <ReuseBox
             title={homeTitles?.fatwas}
             icon={<Image src={fatwa} alt="" width={30} height={30} />}
             showIconBackground={true}
             viewAllText={homeTitles?.viewAll}
-            viewAllHref="/ar"
-            items={fatwaItems}
+            viewAllHref={`/${lang}/fatwas`}
+            items={latest.fatwas}
           />
-          {/* Articles */}
           <ReuseBox
             title={homeTitles?.articles}
             icon={<Image src={articles} alt="" width={30} height={30} />}
             showIconBackground={true}
             viewAllText={homeTitles?.viewAll}
-            viewAllHref="/ar"
-            items={articleItems}
+            viewAllHref={`/${lang}/articles`}
+            items={latest.articles}
           />
-          {/* Books and Letters */}
           <ReuseBox
             title={homeTitles?.books}
             icon={
@@ -110,8 +105,8 @@ const LastPublished = () => {
             }
             showIconBackground={false}
             viewAllText={homeTitles?.viewAll}
-            viewAllHref="/ar"
-            items={bookItems}
+            viewAllHref={`/${lang}/books`}
+            items={latest.books}
           />
         </div>
       </div>

@@ -1,32 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import ReuseBox from "../reusebox/ReuseBox";
 import Image from "next/image";
-import bookOpen from "@/public/assets/images/book.svg";
 import audio from "@/public/assets/images/audio.svg";
 import videoIcon from "@/public/assets/images/videoIcon.svg";
 import articles from "@/public/assets/images/articles.svg";
 import books from "@/public/assets/images/books.png";
 import TranslateHook from "@/translate/TranslateHook";
+import LangUseParams from "@/translate/LangUseParams";
 import MoreWatchedSkeleton from "@/components/skeletons/MoreWatchedSkeleton";
-import {
-  mostWatchedAudioVisualItems,
-  mostWatchedReadingItems,
-} from "./TestData";
+import { useGetHomeMostViewedQuery } from "@/store/home/homeApi";
 
 const MoreWatched = () => {
   const translate = TranslateHook();
+  const lang = LangUseParams();
   const homeTitles = translate?.home?.homeTitles;
-  const [isReady, setIsReady] = useState(false);
+  const { data, isLoading } = useGetHomeMostViewedQuery({
+    lang: lang ?? "ar",
+    audioVisualLimit: 6,
+  });
 
-  useEffect(() => {
-    setIsReady(true);
-  }, []);
-
-  if (!isReady || !homeTitles) {
+  if (isLoading || !homeTitles) {
     return <MoreWatchedSkeleton />;
   }
+
+  const mostViewed = data ?? {
+    audioVisual: [],
+    articles: [],
+    books: [],
+  };
 
   return (
     <section className="relative overflow-hidden py-10">
@@ -52,8 +54,8 @@ const MoreWatched = () => {
               }}
               showIconBackground={true}
               viewAllText={homeTitles?.viewAll}
-              viewAllHref="/ar"
-              items={mostWatchedAudioVisualItems}
+              viewAllHref={`/${lang}/scholarly`}
+              items={mostViewed.audioVisual}
               className="h-full"
             />
           </div>
@@ -63,8 +65,8 @@ const MoreWatched = () => {
               icon={<Image src={articles} alt="" width={30} height={30} />}
               showIconBackground={true}
               viewAllText={homeTitles?.viewAll}
-              viewAllHref="/ar"
-              items={mostWatchedReadingItems}
+              viewAllHref={`/${lang}/articles`}
+              items={mostViewed.articles}
             />
             <ReuseBox
               title={homeTitles?.books}
@@ -79,8 +81,8 @@ const MoreWatched = () => {
               }
               showIconBackground={false}
               viewAllText={homeTitles?.viewAll}
-              viewAllHref="/ar"
-              items={mostWatchedReadingItems}
+              viewAllHref={`/${lang}/books`}
+              items={mostViewed.books}
             />
           </div>
         </div>

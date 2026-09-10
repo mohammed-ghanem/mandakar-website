@@ -11,7 +11,10 @@ const MoreWatchedSkeleton = () => {
 
         <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
           <div className="flex h-full min-h-0 flex-col">
-            <ReuseBoxSkeleton audioItemIndexes={[0, 2, 4]} />
+            <ReuseBoxSkeleton
+              itemCount={6}
+              audioItemIndexes={[0, 1, 2, 3, 4, 5]}
+            />
           </div>
           <div className="flex h-full min-h-0 flex-col gap-6">
             <ReuseBoxSkeleton />

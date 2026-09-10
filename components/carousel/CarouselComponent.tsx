@@ -144,13 +144,14 @@ const CarouselComponent = ({
     const offset = dragOffsetRef.current;
     const containerWidth = containerRef.current?.offsetWidth ?? 0;
     const threshold = Math.min(DRAG_THRESHOLD, containerWidth * 0.1);
+    const didDrag = Math.abs(offset) > 5;
 
     isDraggingRef.current = false;
     pointerIdRef.current = null;
     dragOffsetRef.current = 0;
     setIsDragging(false);
 
-    if (Math.abs(offset) > 5) {
+    if (didDrag) {
       suppressClickRef.current = true;
       window.setTimeout(() => {
         suppressClickRef.current = false;
@@ -177,29 +178,33 @@ const CarouselComponent = ({
     (event: React.PointerEvent<HTMLDivElement>) => {
       if (!enableDrag || event.button !== 0) return;
 
-      isDraggingRef.current = true;
+      // Start tracking only — real drag begins after a movement threshold
+      // so simple clicks on links/buttons still work.
       pointerIdRef.current = event.pointerId;
       startXRef.current = event.clientX;
       dragOffsetRef.current = 0;
-      setIsDragging(true);
-      setIsTransitioning(false);
-      event.currentTarget.setPointerCapture(event.pointerId);
-      applyTransform(0, activeIndexRef.current, false);
+      isDraggingRef.current = false;
     },
-    [applyTransform, enableDrag],
+    [enableDrag],
   );
 
   const handlePointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      if (
-        !enableDrag ||
-        !isDraggingRef.current ||
-        pointerIdRef.current !== event.pointerId
-      ) {
+      if (!enableDrag || pointerIdRef.current !== event.pointerId) {
         return;
       }
 
       const offset = event.clientX - startXRef.current;
+
+      if (!isDraggingRef.current) {
+        if (Math.abs(offset) < 8) return;
+
+        isDraggingRef.current = true;
+        setIsDragging(true);
+        setIsTransitioning(false);
+        event.currentTarget.setPointerCapture(event.pointerId);
+      }
+
       dragOffsetRef.current = offset;
       applyTransform(offset, activeIndexRef.current, false);
     },
@@ -208,16 +213,18 @@ const CarouselComponent = ({
 
   const handlePointerUp = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      if (
-        !enableDrag ||
-        !isDraggingRef.current ||
-        pointerIdRef.current !== event.pointerId
-      ) {
+      if (!enableDrag || pointerIdRef.current !== event.pointerId) {
         return;
       }
 
       if (event.currentTarget.hasPointerCapture(event.pointerId)) {
         event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+
+      if (!isDraggingRef.current) {
+        pointerIdRef.current = null;
+        dragOffsetRef.current = 0;
+        return;
       }
 
       finishDrag();
@@ -227,16 +234,18 @@ const CarouselComponent = ({
 
   const handlePointerCancel = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      if (
-        !enableDrag ||
-        !isDraggingRef.current ||
-        pointerIdRef.current !== event.pointerId
-      ) {
+      if (!enableDrag || pointerIdRef.current !== event.pointerId) {
         return;
       }
 
       if (event.currentTarget.hasPointerCapture(event.pointerId)) {
         event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+
+      if (!isDraggingRef.current) {
+        pointerIdRef.current = null;
+        dragOffsetRef.current = 0;
+        return;
       }
 
       finishDrag();

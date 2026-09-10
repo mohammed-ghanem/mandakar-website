@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image, { type StaticImageData } from "next/image";
 import TranslateHook from "@/translate/TranslateHook";
+import LangUseParams from "@/translate/LangUseParams";
 import { cn } from "@/lib/utils";
 import bookOpen from "@/public/assets/images/book.svg";
 import videoIcon from "@/public/assets/images/videoIcon.svg";
@@ -11,33 +12,27 @@ import fatwa from "@/public/assets/images/fatwa.svg";
 import articles from "@/public/assets/images/articles.svg";
 import down from "@/public/assets/images/down.svg";
 import visite from "@/public/assets/images/visite.svg";
+import {
+  useGetHomeStatisticsQuery,
+  type HomeStatistics,
+} from "@/store/home/homeApi";
 
-type StatKey =
-  | "scholarly"
-  | "lectures"
-  | "khutbas"
-  | "fatwas"
-  | "articles"
-  | "books"
-  | "attachments"
-  | "visits";
+type StatKey = keyof HomeStatistics;
 
-/** Static test data — replace with API values later */
-const statisticsTestData: {
+const statisticsMeta: {
   key: StatKey;
-  value: number;
   icon: StaticImageData;
   iconSize?: number;
   className?: string;
 }[] = [
-  { key: "scholarly", value: 128, icon: bookOpen, iconSize: 40 },
-  { key: "lectures", value: 86, icon: videoIcon, iconSize: 32 },
-  { key: "khutbas", value: 64, icon: audio, iconSize: 32 },
-  { key: "fatwas", value: 210, icon: fatwa, iconSize: 32 },
-  { key: "articles", value: 97, icon: articles, iconSize: 28 },
-  { key: "books", value: 45, icon: bookOpen, iconSize: 40 },
-  { key: "attachments", value: 532, icon: down, iconSize: 32 },
-  { key: "visits", value: 9840, icon: visite, iconSize: 30 },
+  { key: "scholarly", icon: bookOpen, iconSize: 40 },
+  { key: "lectures", icon: videoIcon, iconSize: 32 },
+  { key: "khutbas", icon: audio, iconSize: 32 },
+  { key: "fatwas", icon: fatwa, iconSize: 32 },
+  { key: "articles", icon: articles, iconSize: 28 },
+  { key: "books", icon: bookOpen, iconSize: 40 },
+  { key: "attachments", icon: down, iconSize: 32 },
+  { key: "visits", icon: visite, iconSize: 30 },
 ];
 
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -112,11 +107,25 @@ const StatCard = ({
   );
 };
 
+const emptyStatistics: HomeStatistics = {
+  scholarly: 0,
+  lectures: 0,
+  khutbas: 0,
+  fatwas: 0,
+  articles: 0,
+  books: 0,
+  attachments: 0,
+  visits: 0,
+};
+
 const Statistics = () => {
   const translate = TranslateHook();
+  const lang = LangUseParams();
   const stats = translate?.home?.statistics;
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const { data } = useGetHomeStatisticsQuery({ lang: lang ?? "ar" });
+  const values = data ?? emptyStatistics;
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -145,14 +154,14 @@ const Statistics = () => {
 
         <div className="rounded-2xl bg-white p-4 shadow-sm sm:p-6 md:p-8">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
-            {statisticsTestData.map((item) => (
+            {statisticsMeta.map((item) => (
               <StatCard
                 key={item.key}
                 label={stats?.[item.key] ?? ""}
-                value={item.value}
+                value={values[item.key]}
                 icon={item.icon}
                 iconSize={item.iconSize}
-                active={isVisible}
+                active={isVisible && !!data}
                 className={item.className}
               />
             ))}
