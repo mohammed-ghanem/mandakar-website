@@ -5,7 +5,6 @@ import Image from "next/image";
 import ReuseBox from "@/components/reusebox/ReuseBox";
 import bookOpen from "@/public/assets/images/book.svg";
 import videoIcon from "@/public/assets/images/videoIcon.svg";
-import sermons from "@/public/assets/images/sermons.svg";
 import audio from "@/public/assets/images/audio.svg";
 import fatwa from "@/public/assets/images/fatwa.svg";
 import articles from "@/public/assets/images/articles.svg";
@@ -43,7 +42,7 @@ const LastPublished = () => {
           alt=""
           width={170}
           height={100}
-          className="h-auto w-24 md:w-32 lg:w-[170px]"
+          className="h-auto w-24 md:w-32 lg:w-42.5"
         />
       </div>
       <div className="container mx-auto w-full md:w-[90%] max-w-7xl px-2 sm:px-4">

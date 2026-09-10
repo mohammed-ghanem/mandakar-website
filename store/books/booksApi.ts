@@ -121,8 +121,9 @@ const getMixedText = (
   return getLocalizedText(value, fallback, lang);
 };
 
-const sortByOrder = <T extends { sort_order?: number }>(items: T[] = []) =>
-  [...items].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+const sortByOrder = <T extends { sort_order?: number }>(
+  items?: T[] | null,
+) => [...(items ?? [])].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
 
 const mapBookItem = (
   item: ApiBookItem,
@@ -144,10 +145,11 @@ const mapCategory = (
     mapCategory(child, lang, href),
   );
 
-  const topicsSource =
-    item.has_other_topics && item.other_topics?.length
-      ? item.other_topics
-      : item.books;
+  const topicsSource = item.other_topics?.length
+    ? item.other_topics
+    : item.books?.length
+      ? item.books
+      : [];
 
   const topics = sortByOrder(topicsSource).map((topic) =>
     mapBookItem(topic, lang, true),

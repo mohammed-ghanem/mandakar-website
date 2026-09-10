@@ -4,19 +4,12 @@ import CategoryPageLayout from "@/components/categorySections/CategoryPageLayout
 import CategoryDetailView from "@/components/categorySections/CategoryDetailView";
 import CategoryContentView from "@/components/categorySections/CategoryContentView";
 import CategoryEmptyPage from "@/components/categorySections/CategoryEmptyPage";
-import {
-  findCategoryByHref,
-  hasChildren,
-  hasTopics,
-  type CategoryItem,
-  type FoundCategory,
-} from "@/components/categorySections/types";
+import { useResolvedCategoryRoute } from "@/components/categorySections/useResolvedCategoryRoute";
+import { hasChildren, hasTopics } from "@/components/categorySections/types";
 import CategoryDetailSkeleton from "@/components/skeletons/CategoryDetailSkeleton";
-import { useAppSelector } from "@/store/hooks";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import {
-  buildArticleCategoryHref,
   articlesApi,
   useGetArticleCategoryQuery,
   useGetArticleContentQuery,
@@ -31,74 +24,37 @@ const ArticlesNestedPage = ({ slug }: ArticlesNestedPageProps) => {
   const translate = TranslateHook();
   const page = translate?.pages?.articlesPage;
   const homeLabel = translate?.home?.navbar?.home;
-  const routeId = slug.at(-1) ?? "";
-  const categoryIds = slug
-    .map((segment) => segment.match(/^category-(\d+)$/)?.[1] ?? null)
-    .filter(Boolean) as string[];
-  const articleMatch = routeId.match(/^article-(\d+)$/);
-  const categoryId = categoryIds.at(-1) ?? "";
-  const rootCategoryId = categoryIds[0] ?? "";
-  const articleId = articleMatch?.[1] ?? "";
-  const targetCategoryHref = categoryIds.length
-    ? `/articles/${categoryIds.map((id) => `category-${id}`).join("/")}`
-    : undefined;
-  const isApiCategoryRoute = Boolean(categoryIds.length);
-  const isApiArticleRoute = Boolean(articleId);
 
-  const { data: apiCategory, isLoading } = useGetArticleCategoryQuery(
-    { id: rootCategoryId || categoryId, lang: lang ?? "ar" },
-    { skip: !isApiCategoryRoute },
-  );
-  const { data: apiArticle, isLoading: isArticleLoading } = useGetArticleContentQuery(
-    { id: articleId, lang: lang ?? "ar" },
-    { skip: !isApiArticleRoute },
-  );
-
-  const cachedCategory = useAppSelector((state) => {
-    if (!targetCategoryHref) return null;
-
-    const queries = Object.values(
-      (state[articlesApi.reducerPath]?.queries ?? {}) as Record<
-        string,
-        { data?: unknown }
-      >,
-    );
-
-    for (const query of queries) {
-      const data = query?.data;
-      const items = Array.isArray(data)
-        ? (data as CategoryItem[])
-        : data && typeof data === "object" && "id" in (data as object)
-          ? [data as CategoryItem]
-          : [];
-
-      const found = findCategoryByHref(items, targetCategoryHref);
-      if (found) return found;
-    }
-
-    return null as FoundCategory | null;
+  const {
+    isCategoryRoute,
+    isContentRoute,
+    contentId,
+    isCategoryLoading,
+    resolvedCategory,
+    resolvedTrail,
+  } = useResolvedCategoryRoute({
+    slug,
+    sectionPath: "/articles",
+    contentPrefix: "article",
+    lang: lang ?? "ar",
+    apiReducerPath: articlesApi.reducerPath,
+    useGetCategoryQuery: useGetArticleCategoryQuery,
   });
 
-  const apiCategoryMatch = targetCategoryHref && apiCategory
-    ? findCategoryByHref([apiCategory], targetCategoryHref)
-    : null;
-  const resolvedCategory =
-    apiCategoryMatch?.node ?? cachedCategory?.node ?? apiCategory ?? null;
-  const resolvedTrail =
-    apiCategoryMatch?.trail ??
-    cachedCategory?.trail ??
-    (resolvedCategory ? [resolvedCategory] : []);
+  const { data: apiArticle, isLoading: isArticleLoading } =
+    useGetArticleContentQuery(
+      { id: contentId, lang: lang ?? "ar" },
+      { skip: !isContentRoute },
+    );
 
-  if (
-    !page ||
-    (isApiCategoryRoute && isLoading) ||
-    (isApiArticleRoute && isArticleLoading)
-  ) {
-    let variant: "tabs" | "boxes" | "topics" | "content" =
-      isApiArticleRoute ? "content" : "boxes";
+  if (!page || isCategoryLoading || (isContentRoute && isArticleLoading)) {
+    let variant: "tabs" | "boxes" | "topics" | "content" = isContentRoute
+      ? "content"
+      : "boxes";
 
     if (resolvedCategory) {
-      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory)) variant = "tabs";
+      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory))
+        variant = "tabs";
       else if (hasChildren(resolvedCategory)) variant = "boxes";
       else if (hasTopics(resolvedCategory)) variant = "topics";
     }
@@ -106,7 +62,7 @@ const ArticlesNestedPage = ({ slug }: ArticlesNestedPageProps) => {
     return <CategoryDetailSkeleton variant={variant} />;
   }
 
-  if (isApiArticleRoute && apiArticle) {
+  if (isContentRoute && apiArticle) {
     const title = apiArticle.content.title;
     const crumbs = [
       { label: homeLabel, href: `/${lang}` },
@@ -132,7 +88,7 @@ const ArticlesNestedPage = ({ slug }: ArticlesNestedPageProps) => {
     );
   }
 
-  if (isApiCategoryRoute && resolvedCategory) {
+  if (isCategoryRoute && resolvedCategory) {
     if (hasChildren(resolvedCategory) || hasTopics(resolvedCategory)) {
       return (
         <CategoryDetailView
@@ -162,7 +118,9 @@ const ArticlesNestedPage = ({ slug }: ArticlesNestedPageProps) => {
   }
 
   return (
-    <CategoryPageLayout crumbs={[{ label: homeLabel }, { label: page?.title ?? "" }]}>
+    <CategoryPageLayout
+      crumbs={[{ label: homeLabel }, { label: page?.title ?? "" }]}
+    >
       <p className="text-center text-sm grayColor">{page?.notFound}</p>
     </CategoryPageLayout>
   );

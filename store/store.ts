@@ -1,4 +1,3 @@
-// store/store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import appReducer from "./app/appSlice";
 import { contactApi } from "./contact/contactApi";
@@ -9,9 +8,7 @@ import { speechesApi } from "./speeches/speechesApi";
 import { fatwasApi } from "./fatwas/fatwasApi";
 import { articlesApi } from "./articles/articlesApi";
 import { booksApi } from "./books/booksApi";
-
-
-
+import { homeApi } from "./home/homeApi";
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +21,7 @@ export const store = configureStore({
     [fatwasApi.reducerPath]: fatwasApi.reducer,
     [articlesApi.reducerPath]: articlesApi.reducer,
     [booksApi.reducerPath]: booksApi.reducer,
+    [homeApi.reducerPath]: homeApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -36,9 +34,9 @@ export const store = configureStore({
       fatwasApi.middleware,
       articlesApi.middleware,
       booksApi.middleware,
+      homeApi.middleware,
     ),
-   
 });
 
-export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

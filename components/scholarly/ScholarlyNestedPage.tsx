@@ -4,19 +4,12 @@ import CategoryPageLayout from "@/components/categorySections/CategoryPageLayout
 import CategoryDetailView from "@/components/categorySections/CategoryDetailView";
 import CategoryContentView from "@/components/categorySections/CategoryContentView";
 import CategoryEmptyPage from "@/components/categorySections/CategoryEmptyPage";
-import {
-  findCategoryByHref,
-  hasChildren,
-  hasTopics,
-  type CategoryItem,
-  type FoundCategory,
-} from "@/components/categorySections/types";
+import { useResolvedCategoryRoute } from "@/components/categorySections/useResolvedCategoryRoute";
+import { hasChildren, hasTopics } from "@/components/categorySections/types";
 import CategoryDetailSkeleton from "@/components/skeletons/CategoryDetailSkeleton";
-import { useAppSelector } from "@/store/hooks";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import {
-  buildCategoryHref,
   scholarlyApi,
   useGetScholarlyCategoryQuery,
   useGetScholarlyExplanationQuery,
@@ -31,80 +24,47 @@ const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
   const translate = TranslateHook();
   const page = translate?.pages?.scholarlyPage;
   const homeLabel = translate?.home?.navbar?.home;
-  const routeId = slug.at(-1) ?? "";
-  const categoryIds = slug
-    .map((segment) => segment.match(/^category-(\d+)$/)?.[1] ?? null)
-    .filter(Boolean) as string[];
-  const explanationMatch = routeId.match(/^explanation-(\d+)$/);
-  const categoryId = categoryIds.at(-1) ?? "";
-  const rootCategoryId = categoryIds[0] ?? "";
-  const explanationId = explanationMatch?.[1] ?? "";
-  const targetCategoryHref = categoryIds.length
-    ? `/scholarly/${categoryIds.map((id) => `category-${id}`).join("/")}`
-    : undefined;
-  const isApiCategoryRoute = Boolean(categoryIds.length);
-  const isApiExplanationRoute = Boolean(explanationId);
-  const { data: apiCategory, isLoading } = useGetScholarlyCategoryQuery(
-    { id: rootCategoryId || categoryId, lang: lang ?? "ar" },
-    { skip: !isApiCategoryRoute },
-  );
-  const { data: apiExplanation, isLoading: isExplanationLoading } =
-    useGetScholarlyExplanationQuery(
-      { id: explanationId, lang: lang ?? "ar" },
-      { skip: !isApiExplanationRoute },
-    );
 
-  const cachedCategory = useAppSelector((state) => {
-    if (!targetCategoryHref) return null;
-
-    const queries = Object.values(
-      (state[scholarlyApi.reducerPath]?.queries ?? {}) as Record<
-        string,
-        { data?: unknown }
-      >,
-    );
-
-    for (const query of queries) {
-      const data = query?.data;
-      const items = Array.isArray(data)
-        ? (data as CategoryItem[])
-        : data && typeof data === "object" && "id" in (data as object)
-          ? [data as CategoryItem]
-          : [];
-
-      const found = findCategoryByHref(items, targetCategoryHref);
-      if (found) return found;
-    }
-
-    return null as FoundCategory | null;
+  const {
+    isCategoryRoute,
+    isContentRoute,
+    contentId,
+    isCategoryLoading,
+    resolvedCategory,
+    resolvedTrail,
+  } = useResolvedCategoryRoute({
+    slug,
+    sectionPath: "/scholarly",
+    contentPrefix: "explanation",
+    lang: lang ?? "ar",
+    apiReducerPath: scholarlyApi.reducerPath,
+    useGetCategoryQuery: useGetScholarlyCategoryQuery,
   });
 
-  const apiCategoryMatch = targetCategoryHref && apiCategory
-    ? findCategoryByHref([apiCategory], targetCategoryHref)
-    : null;
-  const resolvedCategory =
-    apiCategoryMatch?.node ?? cachedCategory?.node ?? apiCategory ?? null;
-  const resolvedTrail =
-    apiCategoryMatch?.trail ??
-    cachedCategory?.trail ??
-    (resolvedCategory ? [resolvedCategory] : []);
+  const { data: apiExplanation, isLoading: isExplanationLoading } =
+    useGetScholarlyExplanationQuery(
+      { id: contentId, lang: lang ?? "ar" },
+      { skip: !isContentRoute },
+    );
 
   if (
     !page ||
-    (isApiCategoryRoute && isLoading) ||
-    (isApiExplanationRoute && isExplanationLoading)
+    isCategoryLoading ||
+    (isContentRoute && isExplanationLoading)
   ) {
-    let variant: "tabs" | "boxes" | "topics" | "content" =
-      isApiExplanationRoute ? "content" : "boxes";
+    let variant: "tabs" | "boxes" | "topics" | "content" = isContentRoute
+      ? "content"
+      : "boxes";
     if (resolvedCategory) {
-      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory)) variant = "tabs";
+      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory))
+        variant = "tabs";
       else if (hasChildren(resolvedCategory)) variant = "boxes";
       else if (hasTopics(resolvedCategory)) variant = "topics";
     }
     return <CategoryDetailSkeleton variant={variant} />;
   }
 
-  if (isApiExplanationRoute && apiExplanation) {
+  if (isContentRoute && apiExplanation) {
     const title = apiExplanation.content.title;
     const crumbs = [
       { label: homeLabel, href: `/${lang}` },
@@ -126,7 +86,7 @@ const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
     );
   }
 
-  if (isApiCategoryRoute && resolvedCategory) {
+  if (isCategoryRoute && resolvedCategory) {
     if (hasChildren(resolvedCategory) || hasTopics(resolvedCategory)) {
       return (
         <CategoryDetailView
@@ -154,24 +114,10 @@ const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
     );
   }
 
-  if (isApiExplanationRoute && !apiExplanation) {
-    return (
-      <CategoryPageLayout crumbs={[{ label: homeLabel }, { label: page.title }]}>
-        <p className="text-center text-sm grayColor">{page.notFound}</p>
-      </CategoryPageLayout>
-    );
-  }
-
-  if (isApiCategoryRoute && !resolvedCategory) {
-    return (
-      <CategoryPageLayout crumbs={[{ label: homeLabel }, { label: page.title }]}>
-        <p className="text-center text-sm grayColor">{page.notFound}</p>
-      </CategoryPageLayout>
-    );
-  }
-
   return (
-    <CategoryPageLayout crumbs={[{ label: homeLabel }, { label: page.title }]}>
+    <CategoryPageLayout
+      crumbs={[{ label: homeLabel }, { label: page.title }]}
+    >
       <p className="text-center text-sm grayColor">{page.notFound}</p>
     </CategoryPageLayout>
   );

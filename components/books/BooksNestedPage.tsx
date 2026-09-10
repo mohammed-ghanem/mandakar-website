@@ -4,19 +4,12 @@ import CategoryPageLayout from "@/components/categorySections/CategoryPageLayout
 import CategoryDetailView from "@/components/categorySections/CategoryDetailView";
 import CategoryContentView from "@/components/categorySections/CategoryContentView";
 import CategoryEmptyPage from "@/components/categorySections/CategoryEmptyPage";
-import {
-  findCategoryByHref,
-  hasChildren,
-  hasTopics,
-  type CategoryItem,
-  type FoundCategory,
-} from "@/components/categorySections/types";
+import { useResolvedCategoryRoute } from "@/components/categorySections/useResolvedCategoryRoute";
+import { hasChildren, hasTopics } from "@/components/categorySections/types";
 import CategoryDetailSkeleton from "@/components/skeletons/CategoryDetailSkeleton";
-import { useAppSelector } from "@/store/hooks";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import {
-  buildBookCategoryHref,
   booksApi,
   useGetBookCategoryQuery,
   useGetBookContentQuery,
@@ -31,74 +24,36 @@ const BooksNestedPage = ({ slug }: BooksNestedPageProps) => {
   const translate = TranslateHook();
   const page = translate?.pages?.booksPage;
   const homeLabel = translate?.home?.navbar?.home;
-  const routeId = slug.at(-1) ?? "";
-  const categoryIds = slug
-    .map((segment) => segment.match(/^category-(\d+)$/)?.[1] ?? null)
-    .filter(Boolean) as string[];
-  const bookMatch = routeId.match(/^book-(\d+)$/);
-  const categoryId = categoryIds.at(-1) ?? "";
-  const rootCategoryId = categoryIds[0] ?? "";
-  const bookId = bookMatch?.[1] ?? "";
-  const targetCategoryHref = categoryIds.length
-    ? `/books/${categoryIds.map((id) => `category-${id}`).join("/")}`
-    : undefined;
-  const isApiCategoryRoute = Boolean(categoryIds.length);
-  const isApiBookRoute = Boolean(bookId);
 
-  const { data: apiCategory, isLoading } = useGetBookCategoryQuery(
-    { id: rootCategoryId || categoryId, lang: lang ?? "ar" },
-    { skip: !isApiCategoryRoute },
-  );
-  const { data: apiBook, isLoading: isBookLoading } = useGetBookContentQuery(
-    { id: bookId, lang: lang ?? "ar" },
-    { skip: !isApiBookRoute },
-  );
-
-  const cachedCategory = useAppSelector((state) => {
-    if (!targetCategoryHref) return null;
-
-    const queries = Object.values(
-      (state[booksApi.reducerPath]?.queries ?? {}) as Record<
-        string,
-        { data?: unknown }
-      >,
-    );
-
-    for (const query of queries) {
-      const data = query?.data;
-      const items = Array.isArray(data)
-        ? (data as CategoryItem[])
-        : data && typeof data === "object" && "id" in (data as object)
-          ? [data as CategoryItem]
-          : [];
-
-      const found = findCategoryByHref(items, targetCategoryHref);
-      if (found) return found;
-    }
-
-    return null as FoundCategory | null;
+  const {
+    isCategoryRoute,
+    isContentRoute,
+    contentId,
+    isCategoryLoading,
+    resolvedCategory,
+    resolvedTrail,
+  } = useResolvedCategoryRoute({
+    slug,
+    sectionPath: "/books",
+    contentPrefix: "book",
+    lang: lang ?? "ar",
+    apiReducerPath: booksApi.reducerPath,
+    useGetCategoryQuery: useGetBookCategoryQuery,
   });
 
-  const apiCategoryMatch = targetCategoryHref && apiCategory
-    ? findCategoryByHref([apiCategory], targetCategoryHref)
-    : null;
-  const resolvedCategory =
-    apiCategoryMatch?.node ?? cachedCategory?.node ?? apiCategory ?? null;
-  const resolvedTrail =
-    apiCategoryMatch?.trail ??
-    cachedCategory?.trail ??
-    (resolvedCategory ? [resolvedCategory] : []);
+  const { data: apiBook, isLoading: isBookLoading } = useGetBookContentQuery(
+    { id: contentId, lang: lang ?? "ar" },
+    { skip: !isContentRoute },
+  );
 
-  if (
-    !page ||
-    (isApiCategoryRoute && isLoading) ||
-    (isApiBookRoute && isBookLoading)
-  ) {
-    let variant: "tabs" | "boxes" | "topics" | "content" =
-      isApiBookRoute ? "content" : "boxes";
+  if (!page || isCategoryLoading || (isContentRoute && isBookLoading)) {
+    let variant: "tabs" | "boxes" | "topics" | "content" = isContentRoute
+      ? "content"
+      : "boxes";
 
     if (resolvedCategory) {
-      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory)) variant = "tabs";
+      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory))
+        variant = "tabs";
       else if (hasChildren(resolvedCategory)) variant = "boxes";
       else if (hasTopics(resolvedCategory)) variant = "topics";
     }
@@ -106,7 +61,7 @@ const BooksNestedPage = ({ slug }: BooksNestedPageProps) => {
     return <CategoryDetailSkeleton variant={variant} />;
   }
 
-  if (isApiBookRoute && apiBook) {
+  if (isContentRoute && apiBook) {
     const title = apiBook.content.title;
     const crumbs = [
       { label: homeLabel, href: `/${lang}` },
@@ -132,7 +87,7 @@ const BooksNestedPage = ({ slug }: BooksNestedPageProps) => {
     );
   }
 
-  if (isApiCategoryRoute && resolvedCategory) {
+  if (isCategoryRoute && resolvedCategory) {
     if (hasChildren(resolvedCategory) || hasTopics(resolvedCategory)) {
       return (
         <CategoryDetailView
@@ -162,7 +117,9 @@ const BooksNestedPage = ({ slug }: BooksNestedPageProps) => {
   }
 
   return (
-    <CategoryPageLayout crumbs={[{ label: homeLabel }, { label: page?.title ?? "" }]}>
+    <CategoryPageLayout
+      crumbs={[{ label: homeLabel }, { label: page?.title ?? "" }]}
+    >
       <p className="text-center text-sm grayColor">{page?.notFound}</p>
     </CategoryPageLayout>
   );

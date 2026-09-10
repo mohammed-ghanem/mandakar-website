@@ -113,8 +113,9 @@ const getLocalizedText = (
   lang: string,
 ) => localized?.[lang as keyof ApiLocalizedText] || fallback || "";
 
-const sortByOrder = <T extends { sort_order?: number }>(items: T[] = []) =>
-  [...items].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+const sortByOrder = <T extends { sort_order?: number }>(
+  items?: T[] | null,
+) => [...(items ?? [])].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
 
 const mapFatwaItem = (
   item: ApiFatwaItem,
@@ -136,10 +137,11 @@ const mapCategory = (
     mapCategory(child, lang, href),
   );
 
-  const topicsSource =
-    item.has_other_topics && item.other_topics?.length
-      ? item.other_topics
-      : item.fatwas;
+  const topicsSource = item.other_topics?.length
+    ? item.other_topics
+    : item.fatwas?.length
+      ? item.fatwas
+      : [];
 
   const topics = sortByOrder(topicsSource).map((topic) =>
     mapFatwaItem(topic, lang, true),

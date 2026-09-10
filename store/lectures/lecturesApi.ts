@@ -128,8 +128,9 @@ const getMixedText = (
   return getLocalizedText(value, fallback, lang);
 };
 
-const sortByOrder = <T extends { sort_order?: number }>(items: T[] = []) =>
-  [...items].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+const sortByOrder = <T extends { sort_order?: number }>(
+  items?: T[] | null,
+) => [...(items ?? [])].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
 
 const mapLectureItem = (
   item: ApiLectureItem,
@@ -141,6 +142,12 @@ const mapLectureItem = (
   href: withHref ? buildLectureHref(item.id) : undefined,
 });
 
+const pickCategoryTopics = (item: ApiLectureCategory) => {
+  if (item.other_topics?.length) return item.other_topics;
+  if (item.lectures?.length) return item.lectures;
+  return [];
+};
+
 const mapCategory = (
   item: ApiLectureCategory,
   lang: string,
@@ -151,12 +158,7 @@ const mapCategory = (
     mapCategory(child, lang, href),
   );
 
-  const topicsSource =
-    item.has_other_topics && item.other_topics?.length
-      ? item.other_topics
-      : item.lectures;
-
-  const topics = sortByOrder(topicsSource).map((topic) =>
+  const topics = sortByOrder(pickCategoryTopics(item)).map((topic) =>
     mapLectureItem(topic, lang, true),
   );
 
