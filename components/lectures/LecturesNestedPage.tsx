@@ -11,6 +11,7 @@ import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import {
   lecturesApi,
+  useGetLectureCategoryItemsQuery,
   useGetLectureCategoryQuery,
   useGetLectureContentQuery,
 } from "@/store/lectures/lecturesApi";
@@ -32,6 +33,8 @@ const LecturesNestedPage = ({ slug }: LecturesNestedPageProps) => {
     isCategoryLoading,
     resolvedCategory,
     resolvedTrail,
+    skeletonVariant,
+    skeletonCrumbs,
   } = useResolvedCategoryRoute({
     slug,
     sectionPath: "/lectures",
@@ -39,6 +42,7 @@ const LecturesNestedPage = ({ slug }: LecturesNestedPageProps) => {
     lang: lang ?? "ar",
     apiReducerPath: lecturesApi.reducerPath,
     useGetCategoryQuery: useGetLectureCategoryQuery,
+    useGetCategoryItemsQuery: useGetLectureCategoryItemsQuery,
   });
 
   const { data: apiLecture, isLoading: isLectureLoading } =
@@ -48,18 +52,12 @@ const LecturesNestedPage = ({ slug }: LecturesNestedPageProps) => {
     );
 
   if (!page || isCategoryLoading || (isContentRoute && isLectureLoading)) {
-    let variant: "tabs" | "boxes" | "topics" | "content" = isContentRoute
-      ? "content"
-      : "boxes";
-
-    if (resolvedCategory) {
-      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory))
-        variant = "tabs";
-      else if (hasChildren(resolvedCategory)) variant = "boxes";
-      else if (hasTopics(resolvedCategory)) variant = "topics";
-    }
-
-    return <CategoryDetailSkeleton variant={variant} />;
+    return (
+      <CategoryDetailSkeleton
+        variant={skeletonVariant}
+        crumbs={skeletonCrumbs}
+      />
+    );
   }
 
   if (isContentRoute && apiLecture) {

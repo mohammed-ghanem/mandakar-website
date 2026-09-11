@@ -215,6 +215,26 @@ export const lecturesApi = createApi({
       },
       providesTags: ["LectureCategory"],
     }),
+    /** Leaf / content categories: GET .../categories/:id/items */
+    getLectureCategoryItems: builder.query<
+      CategoryItem | null,
+      { id: string; lang: string }
+    >({
+      query: ({ id, lang }) => ({
+        url: `${LECTURES_API_BASE}/categories/${id}/items`,
+        method: "GET",
+        headers: {
+          "Accept-Language": lang,
+        },
+      }),
+      transformResponse: (response: unknown, _, arg): CategoryItem | null => {
+        const result = response as ApiCategoryResponse;
+        const category = result?.data?.category;
+        if (!category) return null;
+        return mapCategory(category, arg.lang);
+      },
+      providesTags: ["LectureCategory"],
+    }),
     getLectureContent: builder.query<
       ScholarlyExplanationPageData | null,
       { id: string; lang: string }
@@ -342,5 +362,6 @@ export const lecturesApi = createApi({
 export const {
   useGetLectureCategoriesQuery,
   useGetLectureCategoryQuery,
+  useGetLectureCategoryItemsQuery,
   useGetLectureContentQuery,
 } = lecturesApi;

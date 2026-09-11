@@ -65,6 +65,7 @@ type ApiLatestItem = {
   _title?: string;
   image?: string | null;
   audio?: string | null;
+  pdf?: string | null;
   youtube_url?: string | null;
   has_audio?: boolean;
   has_video?: boolean;
@@ -143,6 +144,32 @@ export type HomeStatistics = {
   visits: number;
 };
 
+type ApiSearchResponse = {
+  data?: {
+    query?: string;
+    total?: number;
+    results?: {
+      explanations?: ApiLatestItem[];
+      lectures?: ApiLatestItem[];
+      speeches?: ApiLatestItem[];
+      fatwas?: ApiLatestItem[];
+      articles?: ApiLatestItem[];
+      books?: ApiLatestItem[];
+    };
+  };
+};
+
+export type HomeSearchResults = {
+  query: string;
+  total: number;
+  explanations: ReuseBoxItem[];
+  lectures: ReuseBoxItem[];
+  speeches: ReuseBoxItem[];
+  fatwas: ReuseBoxItem[];
+  articles: ReuseBoxItem[];
+  books: ReuseBoxItem[];
+};
+
 const getLocalizedText = (
   value: ApiLocalizedText | string | undefined,
   fallback: string | undefined,
@@ -194,6 +221,7 @@ const mapLatestItem = (
   const categoryHref = categoryId
     ? withLang(lang, buildCategoryHrefFn(categoryId))
     : contentHref;
+  const mediaKind = item.media_kind?.toLowerCase();
 
   const base = {
     id: item.id,
@@ -203,7 +231,10 @@ const mapLatestItem = (
     titleHref: contentHref,
   };
 
-  if (item.has_video && item.youtube_url) {
+  if (
+    (mediaKind === "video" || item.has_video || Boolean(item.youtube_url)) &&
+    item.youtube_url
+  ) {
     return {
       ...base,
       type: "video",
@@ -211,7 +242,10 @@ const mapLatestItem = (
     };
   }
 
-  if (item.has_audio && item.audio) {
+  if (
+    (mediaKind === "audio" || item.has_audio || Boolean(item.audio)) &&
+    item.audio
+  ) {
     return {
       ...base,
       type: "audio",
@@ -221,11 +255,18 @@ const mapLatestItem = (
     };
   }
 
+  if ((mediaKind === "read" || Boolean(item.pdf)) && item.pdf) {
+    return {
+      ...base,
+      type: "pdf",
+      downloadUrl: item.pdf,
+      viewUrl: item.pdf,
+    };
+  }
+
   return {
     ...base,
-    type: "pdf",
-    downloadUrl: contentHref,
-    viewUrl: contentHref,
+    type: "link",
   };
 };
 
@@ -283,6 +324,7 @@ const mapMostViewedList = (
     .sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))
     .map((item) => {
       const builders = getHrefBuildersByContentType(item.content_type);
+      // Same media mapping as latest-published (audio / video / pdf / link)
       return mapLatestItem(item, lang, builders.content, builders.category);
     });
 
@@ -294,6 +336,7 @@ export const homeApi = createApi({
     "HomeLatestPublished",
     "HomeMostViewed",
     "HomeStatistics",
+    "HomeSearch",
   ],
   endpoints: (builder) => ({
     getHomeBanners: builder.query<HomeBanner[], { lang: string }>({
@@ -440,6 +483,37 @@ export const homeApi = createApi({
       },
       providesTags: ["HomeStatistics"],
     }),
+
+    getHomeSearch: builder.query<
+      HomeSearchResults,
+      { lang: string; q: string }
+    >({
+      query: ({ lang, q }) => ({
+        url: `${HOME_API_BASE}/search`,
+        method: "GET",
+        params: { q },
+        headers: {
+          "Accept-Language": lang,
+        },
+      }),
+      transformResponse: (response: unknown, _, arg): HomeSearchResults => {
+        const result = response as ApiSearchResponse;
+        const data = result?.data ?? {};
+        const results = data.results ?? {};
+
+        return {
+          query: data.query ?? arg.q,
+          total: data.total ?? 0,
+          explanations: mapMostViewedList(results.explanations, arg.lang),
+          lectures: mapMostViewedList(results.lectures, arg.lang),
+          speeches: mapMostViewedList(results.speeches, arg.lang),
+          fatwas: mapMostViewedList(results.fatwas, arg.lang),
+          articles: mapMostViewedList(results.articles, arg.lang),
+          books: mapMostViewedList(results.books, arg.lang),
+        };
+      },
+      providesTags: ["HomeSearch"],
+    }),
   }),
 });
 
@@ -448,4 +522,5 @@ export const {
   useGetHomeLatestPublishedQuery,
   useGetHomeMostViewedQuery,
   useGetHomeStatisticsQuery,
+  useGetHomeSearchQuery,
 } = homeApi;

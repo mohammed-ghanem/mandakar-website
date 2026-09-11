@@ -6,7 +6,11 @@ import {
 } from "./categorySkeletonParts";
 
 const StaticHtmlPageSkeleton = () => (
-  <section className="bkMainColor pb-12 pt-6 sm:pb-16 sm:pt-8" aria-hidden>
+  <section
+    className="bkMainColor pb-12 pt-6 sm:pb-16 sm:pt-8"
+    aria-busy="true"
+    aria-hidden
+  >
     <CategoryBreadcrumbBarSkeleton crumbs={2} />
     <div className="container mx-auto w-full max-w-7xl px-2 sm:px-4 md:w-[90%]">
       <CategoryPageHeaderSkeleton />

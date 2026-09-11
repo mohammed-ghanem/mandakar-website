@@ -2,7 +2,7 @@
 
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import qfooter from "@/public/assets/images/qfooter.png";
 import copyright from "@/public/assets/images/copyright.png";
 import facebook from "@/public/assets/images/facebook.svg";
@@ -12,17 +12,28 @@ import youtube from "@/public/assets/images/youtube.svg";
 import telegram from "@/public/assets/images/telegram.svg";
 import Link from "next/link";
 import ScrollToTop from "../ScrollToTop/ScrollToTop";
+import { useGetWebsiteContactsQuery } from "@/store/staticPages/staticPagesApi";
+
+type FooterSocialKey = "facebook" | "x" | "instagram" | "youtube" | "telegram";
 
 const Footer = () => {
   const lang = LangUseParams();
   const translate = TranslateHook();
   const navbar = translate?.home?.navbar;
-  const footerSocialIcons = [
-    { icon: facebook, alt: "Facebook", width: 10, height: 20 },
-    { icon: twitter, alt: "X", width: 20, height: 20 },
-    { icon: instagram, alt: "Instagram", width: 20, height: 20 },
-    { icon: youtube, alt: "YouTube", width: 20, height: 20 },
-    { icon: telegram, alt: "Telegram", width: 20, height: 20 },
+  const { data: social } = useGetWebsiteContactsQuery({ lang: lang ?? "ar" });
+
+  const footerSocialIcons: {
+    key: FooterSocialKey;
+    icon: StaticImageData;
+    alt: string;
+    width: number;
+    height: number;
+  }[] = [
+    { key: "facebook", icon: facebook, alt: "Facebook", width: 10, height: 20 },
+    { key: "x", icon: twitter, alt: "X", width: 20, height: 20 },
+    { key: "instagram", icon: instagram, alt: "Instagram", width: 20, height: 20 },
+    { key: "youtube", icon: youtube, alt: "YouTube", width: 20, height: 20 },
+    { key: "telegram", icon: telegram, alt: "Telegram", width: 20, height: 20 },
   ];
 
   const mainLinks = [
@@ -64,19 +75,40 @@ const Footer = () => {
 
         <div className="mt-4 flex justify-center">
           <div className="flex items-center gap-2">
-            {footerSocialIcons.map((item) => (
-              <span
-                key={item.alt}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-transparent"
-              >
+            {footerSocialIcons.map((item) => {
+              const href = social?.[item.key];
+              const className =
+                "flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-transparent";
+              const icon = (
                 <Image
                   src={item.icon}
                   alt={item.alt}
                   width={item.width}
                   height={item.height}
                 />
-              </span>
-            ))}
+              );
+
+              if (href) {
+                return (
+                  <a
+                    key={item.alt}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={item.alt}
+                    className={className}
+                  >
+                    {icon}
+                  </a>
+                );
+              }
+
+              return (
+                <span key={item.alt} className={className}>
+                  {icon}
+                </span>
+              );
+            })}
           </div>
         </div>
 

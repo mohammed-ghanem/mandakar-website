@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
@@ -11,8 +11,9 @@ const WORKER_URL =
   "https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
 
 const getFetchUrl = (url: string) => {
+  // Remote PDFs must go through our proxy to avoid browser CORS failures.
   if (url.startsWith("http://") || url.startsWith("https://")) {
-    return url;
+    return `/api/pdf?url=${encodeURIComponent(url)}`;
   }
 
   const publicPath = url.startsWith("/") ? url.slice(1) : url;
@@ -24,71 +25,32 @@ type PdfViewerProps = {
 };
 
 const PdfViewer = ({ url }: PdfViewerProps) => {
-  const [file, setFile] = useState<Uint8Array | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
+  const fileUrl = useMemo(() => getFetchUrl(url), [url]);
+  // Must be called at component top level — this plugin uses React hooks internally.
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadPdf = async () => {
-      setIsLoading(true);
-      setError(null);
-      setFile(null);
-
-      try {
-        const response = await fetch(getFetchUrl(url));
-        if (!response.ok) {
-          throw new Error("Failed to fetch PDF");
-        }
-
-        const buffer = await response.arrayBuffer();
-        if (buffer.byteLength === 0) {
-          throw new Error("Empty PDF");
-        }
-        if (!cancelled) {
-          setFile(new Uint8Array(buffer));
-        }
-      } catch {
-        if (!cancelled) {
-          setError("تعذر تحميل ملف PDF. يرجى المحاولة مرة أخرى.");
-        }
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    void loadPdf();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [url]);
-
-  if (isLoading) {
-    return (
-      <div className="flex h-[85vh] items-center justify-center bg-[#525659] text-sm text-white">
-        جاري تحميل الملف...
-      </div>
-    );
-  }
-
-  if (error || !file) {
-    return (
-      <div className="flex h-[85vh] items-center justify-center bg-[#525659] text-sm text-red-200">
-        {error ?? "تعذر عرض الملف"}
-      </div>
-    );
-  }
 
   return (
     <Worker workerUrl={WORKER_URL}>
-      <div className="h-[85vh]">
-        <Viewer fileUrl={file} plugins={[defaultLayoutPluginInstance]} />
+      <div className="h-[85vh] w-full min-w-0">
+        <Viewer
+          fileUrl={fileUrl}
+          plugins={[defaultLayoutPluginInstance]}
+          renderLoader={(percentages: number) => (
+            <div className="flex h-[85vh] w-full flex-col items-center justify-center gap-2 bg-[#525659] text-sm text-white">
+              <span>جاري تحميل الملف...</span>
+              {Number.isFinite(percentages) && percentages > 0 ? (
+                <span className="tabular-nums text-white/80">
+                  {Math.min(100, Math.round(percentages))}%
+                </span>
+              ) : null}
+            </div>
+          )}
+          renderError={() => (
+            <div className="flex h-[85vh] w-full items-center justify-center bg-[#525659] text-sm text-red-200">
+              تعذر تحميل ملف PDF. يرجى المحاولة مرة أخرى.
+            </div>
+          )}
+        />
       </div>
     </Worker>
   );

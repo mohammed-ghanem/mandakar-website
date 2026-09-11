@@ -22,9 +22,15 @@ type LocalizedText = {
   en?: string;
 };
 
+type ContentSeo = {
+  description?: LocalizedText | string | null;
+  keywords?: string[] | string | null;
+};
+
 type ContentMeta = {
   title: string;
   description?: string;
+  keywords?: string[];
   image?: string;
 };
 
@@ -121,6 +127,25 @@ const truncate = (value: string, max = 160) => {
   return `${value.slice(0, max - 1).trimEnd()}…`;
 };
 
+const normalizeKeywords = (
+  keywords?: string[] | string | null,
+): string[] | undefined => {
+  if (!keywords) return undefined;
+
+  const parts =
+    typeof keywords === "string"
+      ? keywords.split(/[,،]/)
+      : Array.isArray(keywords)
+        ? keywords
+        : [];
+
+  const cleaned = parts
+    .map((keyword) => keyword?.trim())
+    .filter((keyword): keyword is string => Boolean(keyword));
+
+  return cleaned.length ? cleaned : undefined;
+};
+
 const absolutePublicUrl = (lang: string, path: string) => {
   const base = getSiteUrl();
   const normalized = path.startsWith("/") ? path : `/${path}`;
@@ -168,16 +193,27 @@ async function fetchContentMeta(
   const title = getLocalizedText(item.title, item._title, lang);
   if (!title) return null;
 
+  const seo = item.seo as ContentSeo | undefined;
+  const seoDescription = getLocalizedText(seo?.description, undefined, lang);
+  const bodyDescription = getLocalizedText(
+    typeof item.description === "string" ||
+      (item.description &&
+        typeof item.description === "object" &&
+        !Array.isArray(item.description))
+      ? item.description
+      : undefined,
+    item._description,
+    lang,
+  );
+
   const description = truncate(
-    stripHtml(
-      getLocalizedText(item.description, item._description, lang) ||
-        siteDescriptionForLang(lang),
-    ),
+    stripHtml(seoDescription || bodyDescription || siteDescriptionForLang(lang)),
   );
 
   return {
     title,
     description: description || siteDescriptionForLang(lang),
+    keywords: normalizeKeywords(seo?.keywords),
     image: item.image || undefined,
   };
 }
@@ -240,7 +276,7 @@ export function buildPageMetadata({
       absolute: fullTitle,
     },
     description: desc,
-    keywords,
+    ...(keywords?.length ? { keywords } : {}),
     authors: [{ name: siteTitle, url: getSiteUrl() }],
     robots: "index, follow",
     alternates: {
@@ -307,6 +343,7 @@ export async function generateContentSlugMetadata({
     lang,
     title: meta?.title || fallbackTitle,
     description: meta?.description,
+    keywords: meta?.keywords,
     path,
     image: meta?.image,
     type: contentMatch ? "article" : "website",
@@ -389,13 +426,30 @@ export async function fetchSectionSitemapPaths(
 
         paths.add(`${config.pathPrefix}/category-${category.id}`);
 
-        for (const item of getCategoryTopicItems(section, category)) {
+        let topicItems = getCategoryTopicItems(section, category);
+        const childCategories = category.children ?? [];
+
+        // Leaf categories may expose topics only via .../categories/:id/items
+        if (!topicItems.length && childCategories.length === 0) {
+          const itemsJson = await fetchJson(
+            `${apiBase}/client-api/v1/${config.apiBase}/categories/${category.id}/items`,
+            lang,
+          );
+          const itemsCategory = itemsJson?.data?.category as
+            | SitemapCategoryNode
+            | undefined;
+          if (itemsCategory) {
+            topicItems = getCategoryTopicItems(section, itemsCategory);
+          }
+        }
+
+        for (const item of topicItems) {
           paths.add(
             `${config.pathPrefix}/${config.contentPrefix}-${item.id}`,
           );
         }
 
-        for (const child of category.children ?? []) {
+        for (const child of childCategories) {
           const childId = String(child.id);
           if (!visited.has(childId)) pending.push(childId);
         }

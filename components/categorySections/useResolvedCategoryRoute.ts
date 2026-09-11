@@ -7,6 +7,10 @@ import {
   type CategoryItem,
   type FoundCategory,
 } from "@/components/categorySections/types";
+import {
+  resolveCategorySkeletonCrumbs,
+  resolveCategorySkeletonVariant,
+} from "@/components/categorySections/resolveCategorySkeleton";
 import { useAppSelector } from "@/store/hooks";
 import type { RootState } from "@/store/store";
 
@@ -23,6 +27,15 @@ type UseResolvedCategoryRouteArgs = {
   lang: string;
   apiReducerPath: keyof RootState;
   useGetCategoryQuery: (
+    args: { id: string; lang: string },
+    options?: { skip?: boolean },
+  ) => CategoryQueryResult;
+  /**
+   * Optional leaf items endpoint (`.../categories/:id/items`).
+   * Used when the category detail has no nested sections and topics
+   * live on the dedicated items payload (e.g. lectures).
+   */
+  useGetCategoryItemsQuery?: (
     args: { id: string; lang: string },
     options?: { skip?: boolean },
   ) => CategoryQueryResult;
@@ -82,12 +95,11 @@ const categoryHasContent = (category: CategoryItem | null | undefined) =>
   Boolean(category && (hasChildren(category) || hasTopics(category)));
 
 /**
- * Resolves nested category routes using the same category endpoints already used
- * by the project (`GET .../categories/:id`).
+ * Resolves nested category routes.
  *
- * - Leaf category id is fetched for topics/children
- * - Root category is fetched (when nested) only to rebuild breadcrumb trail
- * - Cache is a fallback if a request is unavailable
+ * - `GET .../categories/:id` for sections tree
+ * - optional `GET .../categories/:id/items` for topic links on leaf categories
+ * - root category (when nested) rebuilds breadcrumb trail
  */
 export const useResolvedCategoryRoute = ({
   slug,
@@ -96,6 +108,7 @@ export const useResolvedCategoryRoute = ({
   lang,
   apiReducerPath,
   useGetCategoryQuery,
+  useGetCategoryItemsQuery,
 }: UseResolvedCategoryRouteArgs) => {
   const routeId = slug.at(-1) ?? "";
   const categoryIds = slug
@@ -131,6 +144,32 @@ export const useResolvedCategoryRoute = ({
     { skip: !needsRootTrail },
   );
 
+  const hasItemsEndpoint = Boolean(useGetCategoryItemsQuery);
+  const getCategoryItems = useGetCategoryItemsQuery ?? useGetCategoryQuery;
+
+  const leafLooksLikeSectionTree =
+    Boolean(leafCategory) && hasChildren(leafCategory!);
+
+  // Sub-sub routes always use /items. Shallower leaves use /items only when
+  // category detail has no nested sections (topics live on the items payload).
+  const shouldFetchItems =
+    hasItemsEndpoint &&
+    isCategoryRoute &&
+    Boolean(leafCategoryId) &&
+    (categoryIds.length >= 3 ||
+      (!isLeafLoading && (isLeafError || !leafLooksLikeSectionTree)));
+
+  const {
+    data: itemsCategory,
+    isLoading: isItemsLoading,
+    isError: isItemsError,
+  } = getCategoryItems(
+    { id: leafCategoryId, lang },
+    {
+      skip: !shouldFetchItems || !leafCategoryId,
+    },
+  );
+
   const cachedCategory = useAppSelector((state) => {
     if (!targetCategoryHref || !leafCategoryId) return null;
     return findCachedCategory(
@@ -143,35 +182,39 @@ export const useResolvedCategoryRoute = ({
 
   const treeSource = rootCategory ?? (!needsRootTrail ? leafCategory : null);
   const treeMatch = treeSource
-    ? findCategoryByHref(
-        [treeSource],
-        targetCategoryHref ?? "",
-      ) ??
+    ? (findCategoryByHref([treeSource], targetCategoryHref ?? "") ??
       (leafCategoryId
         ? findCategoryById([treeSource], leafCategoryId)
-        : null)
+        : null))
     : null;
+
+  const itemsNode =
+    !isItemsError && itemsCategory
+      ? withHref(itemsCategory, targetCategoryHref)
+      : null;
 
   const leafNode =
     !isLeafError && leafCategory
       ? withHref(leafCategory, targetCategoryHref)
       : null;
 
-  // Prefer the leaf endpoint payload (this is where topics live).
-  // Fall back to parent-tree/cache only when leaf has no usable content.
-  const resolvedCategory = categoryHasContent(leafNode)
-    ? leafNode
-    : categoryHasContent(treeMatch?.node)
-      ? withHref(treeMatch!.node, targetCategoryHref)
-      : categoryHasContent(cachedCategory?.node)
-        ? withHref(cachedCategory!.node, targetCategoryHref)
-        : leafNode ??
-          (treeMatch?.node
-            ? withHref(treeMatch.node, targetCategoryHref)
-            : null) ??
-          (cachedCategory?.node
-            ? withHref(cachedCategory.node, targetCategoryHref)
-            : null);
+  // Prefer /items (topics) when present; otherwise category tree / cache.
+  const resolvedCategory = categoryHasContent(itemsNode)
+    ? itemsNode
+    : categoryHasContent(leafNode)
+      ? leafNode
+      : categoryHasContent(treeMatch?.node)
+        ? withHref(treeMatch!.node, targetCategoryHref)
+        : categoryHasContent(cachedCategory?.node)
+          ? withHref(cachedCategory!.node, targetCategoryHref)
+          : itemsNode ??
+            leafNode ??
+            (treeMatch?.node
+              ? withHref(treeMatch.node, targetCategoryHref)
+              : null) ??
+            (cachedCategory?.node
+              ? withHref(cachedCategory.node, targetCategoryHref)
+              : null);
 
   const resolvedTrail = (() => {
     const baseTrail =
@@ -187,9 +230,7 @@ export const useResolvedCategoryRoute = ({
         : item,
     );
 
-    if (
-      String(trail[trail.length - 1]?.id) !== String(resolvedCategory.id)
-    ) {
+    if (String(trail[trail.length - 1]?.id) !== String(resolvedCategory.id)) {
       return [...trail, resolvedCategory];
     }
 
@@ -198,7 +239,21 @@ export const useResolvedCategoryRoute = ({
 
   const isCategoryLoading =
     isCategoryRoute &&
-    (isLeafLoading || (needsRootTrail && isRootLoading && !resolvedCategory));
+    (isLeafLoading ||
+      (shouldFetchItems && isItemsLoading) ||
+      (needsRootTrail && isRootLoading && !resolvedCategory));
+
+  const skeletonVariant = resolveCategorySkeletonVariant({
+    isContentRoute,
+    categoryIds,
+    resolvedCategory,
+    expectsItems: shouldFetchItems || Boolean(itemsNode && hasTopics(itemsNode)),
+  });
+
+  const skeletonCrumbs = resolveCategorySkeletonCrumbs({
+    isContentRoute,
+    categoryIds,
+  });
 
   return {
     categoryIds,
@@ -211,5 +266,7 @@ export const useResolvedCategoryRoute = ({
     isCategoryLoading,
     resolvedCategory,
     resolvedTrail,
+    skeletonVariant,
+    skeletonCrumbs,
   };
 };

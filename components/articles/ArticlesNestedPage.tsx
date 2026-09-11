@@ -11,6 +11,7 @@ import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import {
   articlesApi,
+  useGetArticleCategoryItemsQuery,
   useGetArticleCategoryQuery,
   useGetArticleContentQuery,
 } from "@/store/articles/articlesApi";
@@ -32,6 +33,8 @@ const ArticlesNestedPage = ({ slug }: ArticlesNestedPageProps) => {
     isCategoryLoading,
     resolvedCategory,
     resolvedTrail,
+    skeletonVariant,
+    skeletonCrumbs,
   } = useResolvedCategoryRoute({
     slug,
     sectionPath: "/articles",
@@ -39,6 +42,7 @@ const ArticlesNestedPage = ({ slug }: ArticlesNestedPageProps) => {
     lang: lang ?? "ar",
     apiReducerPath: articlesApi.reducerPath,
     useGetCategoryQuery: useGetArticleCategoryQuery,
+    useGetCategoryItemsQuery: useGetArticleCategoryItemsQuery,
   });
 
   const { data: apiArticle, isLoading: isArticleLoading } =
@@ -48,18 +52,12 @@ const ArticlesNestedPage = ({ slug }: ArticlesNestedPageProps) => {
     );
 
   if (!page || isCategoryLoading || (isContentRoute && isArticleLoading)) {
-    let variant: "tabs" | "boxes" | "topics" | "content" = isContentRoute
-      ? "content"
-      : "boxes";
-
-    if (resolvedCategory) {
-      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory))
-        variant = "tabs";
-      else if (hasChildren(resolvedCategory)) variant = "boxes";
-      else if (hasTopics(resolvedCategory)) variant = "topics";
-    }
-
-    return <CategoryDetailSkeleton variant={variant} />;
+    return (
+      <CategoryDetailSkeleton
+        variant={skeletonVariant}
+        crumbs={skeletonCrumbs}
+      />
+    );
   }
 
   if (isContentRoute && apiArticle) {

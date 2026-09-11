@@ -11,6 +11,7 @@ import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import {
   fatwasApi,
+  useGetFatwaCategoryItemsQuery,
   useGetFatwaCategoryQuery,
   useGetFatwaContentQuery,
 } from "@/store/fatwas/fatwasApi";
@@ -32,6 +33,8 @@ const FatwasNestedPage = ({ slug }: FatwasNestedPageProps) => {
     isCategoryLoading,
     resolvedCategory,
     resolvedTrail,
+    skeletonVariant,
+    skeletonCrumbs,
   } = useResolvedCategoryRoute({
     slug,
     sectionPath: "/fatwas",
@@ -39,6 +42,7 @@ const FatwasNestedPage = ({ slug }: FatwasNestedPageProps) => {
     lang: lang ?? "ar",
     apiReducerPath: fatwasApi.reducerPath,
     useGetCategoryQuery: useGetFatwaCategoryQuery,
+    useGetCategoryItemsQuery: useGetFatwaCategoryItemsQuery,
   });
 
   const { data: apiFatwa, isLoading: isFatwaLoading } = useGetFatwaContentQuery(
@@ -47,18 +51,12 @@ const FatwasNestedPage = ({ slug }: FatwasNestedPageProps) => {
   );
 
   if (!page || isCategoryLoading || (isContentRoute && isFatwaLoading)) {
-    let variant: "tabs" | "boxes" | "topics" | "content" = isContentRoute
-      ? "content"
-      : "boxes";
-
-    if (resolvedCategory) {
-      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory))
-        variant = "tabs";
-      else if (hasChildren(resolvedCategory)) variant = "boxes";
-      else if (hasTopics(resolvedCategory)) variant = "topics";
-    }
-
-    return <CategoryDetailSkeleton variant={variant} />;
+    return (
+      <CategoryDetailSkeleton
+        variant={skeletonVariant}
+        crumbs={skeletonCrumbs}
+      />
+    );
   }
 
   if (isContentRoute && apiFatwa) {

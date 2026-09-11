@@ -229,6 +229,15 @@
       "empty": "No content is available at the moment.",
       "error": "We could not load this page. Please try again later.",
       "retry": "Try again"
+    },
+    "searchPage": {
+      "title": "Search Results",
+      "resultsFor": "Results for",
+      "resultsCount": "results",
+      "empty": "No results match your search.",
+      "emptyQuery": "Enter a search term in the search field above.",
+      "error": "Search failed. Please try again.",
+      "loading": "Searching…"
     }
   },
   "settings": {

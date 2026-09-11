@@ -1,5 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import type { CategorySkeletonVariant } from "@/components/categorySections/resolveCategorySkeleton";
 import {
   CARD_SHADOW,
   CategoryBreadcrumbBarSkeleton,
@@ -9,18 +10,19 @@ import {
 } from "./categorySkeletonParts";
 
 type CategoryDetailSkeletonProps = {
-  variant?: "tabs" | "boxes" | "topics" | "content";
+  variant?: CategorySkeletonVariant;
+  crumbs?: number;
 };
 
 const BoxCardSkeleton = () => (
   <article
     className={cn(
-      "flex h-72 flex-col items-start rounded-2xl bg-white p-4",
+      "flex h-72 flex-col items-start overflow-hidden rounded-2xl bg-white p-4",
       CARD_SHADOW,
     )}
   >
     <Skeleton className="mb-2 h-8 w-10" />
-    <Skeleton className="mb-4 h-5 w-36" />
+    <Skeleton className="mb-4 h-5 w-36 sm:h-6 sm:w-44" />
     <div className="w-full space-y-3">
       <CategoryLinkRowSkeleton />
       <CategoryLinkRowSkeleton />
@@ -43,7 +45,7 @@ const TopicsCardSkeleton = () => (
     className={cn("rounded-2xl bg-white p-4 sm:p-6 md:p-8", CARD_SHADOW)}
   >
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-4">
-      {Array.from({ length: 8 }).map((_, index) => (
+      {Array.from({ length: 10 }).map((_, index) => (
         <div
           key={index}
           className={cn(
@@ -161,13 +163,15 @@ const ContentCardSkeleton = () => (
 
 const CategoryDetailSkeleton = ({
   variant = "topics",
+  crumbs = 3,
 }: CategoryDetailSkeletonProps) => {
   return (
     <section
       className="bkMainColor pb-12 pt-6 sm:pb-16 sm:pt-8"
+      aria-busy="true"
       aria-hidden
     >
-      <CategoryBreadcrumbBarSkeleton crumbs={3} />
+      <CategoryBreadcrumbBarSkeleton crumbs={crumbs} />
 
       <div className="container mx-auto w-full max-w-7xl px-2 sm:px-4 md:w-[90%]">
         {variant !== "content" && <CategoryPageHeaderSkeleton />}

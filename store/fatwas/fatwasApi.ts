@@ -213,6 +213,25 @@ export const fatwasApi = createApi({
       },
       providesTags: ["FatwaCategory"],
     }),
+    getFatwaCategoryItems: builder.query<
+      CategoryItem | null,
+      { id: string; lang: string }
+    >({
+      query: ({ id, lang }) => ({
+        url: `${FATWAS_API_BASE}/categories/${id}/items`,
+        method: "GET",
+        headers: {
+          "Accept-Language": lang,
+        },
+      }),
+      transformResponse: (response: unknown, _, arg): CategoryItem | null => {
+        const result = response as ApiCategoryResponse;
+        const category = result?.data?.category;
+        if (!category) return null;
+        return mapCategory(category, arg.lang);
+      },
+      providesTags: ["FatwaCategory"],
+    }),
     getFatwaContent: builder.query<
       ScholarlyExplanationPageData | null,
       { id: string; lang: string }
@@ -340,5 +359,6 @@ export const fatwasApi = createApi({
 export const {
   useGetFatwaCategoriesQuery,
   useGetFatwaCategoryQuery,
+  useGetFatwaCategoryItemsQuery,
   useGetFatwaContentQuery,
 } = fatwasApi;

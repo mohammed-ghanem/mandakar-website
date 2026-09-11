@@ -222,6 +222,25 @@ export const articlesApi = createApi({
       },
       providesTags: ["ArticleCategory"],
     }),
+    getArticleCategoryItems: builder.query<
+      CategoryItem | null,
+      { id: string; lang: string }
+    >({
+      query: ({ id, lang }) => ({
+        url: `${ARTICLES_API_BASE}/categories/${id}/items`,
+        method: "GET",
+        headers: {
+          "Accept-Language": lang,
+        },
+      }),
+      transformResponse: (response: unknown, _, arg): CategoryItem | null => {
+        const result = response as ApiCategoryResponse;
+        const category = result?.data?.category;
+        if (!category) return null;
+        return mapCategory(category, arg.lang);
+      },
+      providesTags: ["ArticleCategory"],
+    }),
     getArticleContent: builder.query<
       ScholarlyExplanationPageData | null,
       { id: string; lang: string }
@@ -349,5 +368,6 @@ export const articlesApi = createApi({
 export const {
   useGetArticleCategoriesQuery,
   useGetArticleCategoryQuery,
+  useGetArticleCategoryItemsQuery,
   useGetArticleContentQuery,
 } = articlesApi;

@@ -205,6 +205,25 @@ export const speechesApi = createApi({
       },
       providesTags: ["SpeechCategory"],
     }),
+    getSpeechCategoryItems: builder.query<
+      CategoryItem | null,
+      { id: string; lang: string }
+    >({
+      query: ({ id, lang }) => ({
+        url: `${SPEECHES_API_BASE}/categories/${id}/items`,
+        method: "GET",
+        headers: {
+          "Accept-Language": lang,
+        },
+      }),
+      transformResponse: (response: unknown, _, arg): CategoryItem | null => {
+        const result = response as ApiCategoryResponse;
+        const category = result?.data?.category;
+        if (!category) return null;
+        return mapCategory(category, arg.lang);
+      },
+      providesTags: ["SpeechCategory"],
+    }),
     getSpeechContent: builder.query<
       ScholarlyExplanationPageData | null,
       { id: string; lang: string }
@@ -332,5 +351,6 @@ export const speechesApi = createApi({
 export const {
   useGetSpeechCategoriesQuery,
   useGetSpeechCategoryQuery,
+  useGetSpeechCategoryItemsQuery,
   useGetSpeechContentQuery,
 } = speechesApi;

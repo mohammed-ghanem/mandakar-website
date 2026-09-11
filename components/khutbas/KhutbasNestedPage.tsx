@@ -11,6 +11,7 @@ import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import {
   speechesApi,
+  useGetSpeechCategoryItemsQuery,
   useGetSpeechCategoryQuery,
   useGetSpeechContentQuery,
 } from "@/store/speeches/speechesApi";
@@ -32,6 +33,8 @@ const KhutbasNestedPage = ({ slug }: KhutbasNestedPageProps) => {
     isCategoryLoading,
     resolvedCategory,
     resolvedTrail,
+    skeletonVariant,
+    skeletonCrumbs,
   } = useResolvedCategoryRoute({
     slug,
     sectionPath: "/khutbas",
@@ -39,6 +42,7 @@ const KhutbasNestedPage = ({ slug }: KhutbasNestedPageProps) => {
     lang: lang ?? "ar",
     apiReducerPath: speechesApi.reducerPath,
     useGetCategoryQuery: useGetSpeechCategoryQuery,
+    useGetCategoryItemsQuery: useGetSpeechCategoryItemsQuery,
   });
 
   const { data: apiSpeech, isLoading: isSpeechLoading } =
@@ -48,18 +52,12 @@ const KhutbasNestedPage = ({ slug }: KhutbasNestedPageProps) => {
     );
 
   if (!page || isCategoryLoading || (isContentRoute && isSpeechLoading)) {
-    let variant: "tabs" | "boxes" | "topics" | "content" = isContentRoute
-      ? "content"
-      : "boxes";
-
-    if (resolvedCategory) {
-      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory))
-        variant = "tabs";
-      else if (hasChildren(resolvedCategory)) variant = "boxes";
-      else if (hasTopics(resolvedCategory)) variant = "topics";
-    }
-
-    return <CategoryDetailSkeleton variant={variant} />;
+    return (
+      <CategoryDetailSkeleton
+        variant={skeletonVariant}
+        crumbs={skeletonCrumbs}
+      />
+    );
   }
 
   if (isContentRoute && apiSpeech) {

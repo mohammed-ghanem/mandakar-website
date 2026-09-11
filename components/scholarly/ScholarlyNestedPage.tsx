@@ -11,6 +11,7 @@ import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import {
   scholarlyApi,
+  useGetScholarlyCategoryItemsQuery,
   useGetScholarlyCategoryQuery,
   useGetScholarlyExplanationQuery,
 } from "@/store/scholarly/scholarlyApi";
@@ -32,6 +33,8 @@ const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
     isCategoryLoading,
     resolvedCategory,
     resolvedTrail,
+    skeletonVariant,
+    skeletonCrumbs,
   } = useResolvedCategoryRoute({
     slug,
     sectionPath: "/scholarly",
@@ -39,6 +42,7 @@ const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
     lang: lang ?? "ar",
     apiReducerPath: scholarlyApi.reducerPath,
     useGetCategoryQuery: useGetScholarlyCategoryQuery,
+    useGetCategoryItemsQuery: useGetScholarlyCategoryItemsQuery,
   });
 
   const { data: apiExplanation, isLoading: isExplanationLoading } =
@@ -52,16 +56,12 @@ const ScholarlyNestedPage = ({ slug }: ScholarlyNestedPageProps) => {
     isCategoryLoading ||
     (isContentRoute && isExplanationLoading)
   ) {
-    let variant: "tabs" | "boxes" | "topics" | "content" = isContentRoute
-      ? "content"
-      : "boxes";
-    if (resolvedCategory) {
-      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory))
-        variant = "tabs";
-      else if (hasChildren(resolvedCategory)) variant = "boxes";
-      else if (hasTopics(resolvedCategory)) variant = "topics";
-    }
-    return <CategoryDetailSkeleton variant={variant} />;
+    return (
+      <CategoryDetailSkeleton
+        variant={skeletonVariant}
+        crumbs={skeletonCrumbs}
+      />
+    );
   }
 
   if (isContentRoute && apiExplanation) {

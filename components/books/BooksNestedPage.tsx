@@ -11,6 +11,7 @@ import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import {
   booksApi,
+  useGetBookCategoryItemsQuery,
   useGetBookCategoryQuery,
   useGetBookContentQuery,
 } from "@/store/books/booksApi";
@@ -32,6 +33,8 @@ const BooksNestedPage = ({ slug }: BooksNestedPageProps) => {
     isCategoryLoading,
     resolvedCategory,
     resolvedTrail,
+    skeletonVariant,
+    skeletonCrumbs,
   } = useResolvedCategoryRoute({
     slug,
     sectionPath: "/books",
@@ -39,6 +42,7 @@ const BooksNestedPage = ({ slug }: BooksNestedPageProps) => {
     lang: lang ?? "ar",
     apiReducerPath: booksApi.reducerPath,
     useGetCategoryQuery: useGetBookCategoryQuery,
+    useGetCategoryItemsQuery: useGetBookCategoryItemsQuery,
   });
 
   const { data: apiBook, isLoading: isBookLoading } = useGetBookContentQuery(
@@ -47,18 +51,12 @@ const BooksNestedPage = ({ slug }: BooksNestedPageProps) => {
   );
 
   if (!page || isCategoryLoading || (isContentRoute && isBookLoading)) {
-    let variant: "tabs" | "boxes" | "topics" | "content" = isContentRoute
-      ? "content"
-      : "boxes";
-
-    if (resolvedCategory) {
-      if (hasChildren(resolvedCategory) && hasTopics(resolvedCategory))
-        variant = "tabs";
-      else if (hasChildren(resolvedCategory)) variant = "boxes";
-      else if (hasTopics(resolvedCategory)) variant = "topics";
-    }
-
-    return <CategoryDetailSkeleton variant={variant} />;
+    return (
+      <CategoryDetailSkeleton
+        variant={skeletonVariant}
+        crumbs={skeletonCrumbs}
+      />
+    );
   }
 
   if (isContentRoute && apiBook) {

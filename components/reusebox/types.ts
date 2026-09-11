@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-export type ReuseBoxContentType = "audio" | "pdf" | "video";
+export type ReuseBoxContentType = "audio" | "pdf" | "video" | "link";
 
 type ReuseBoxItemBase = {
   id: string | number;
@@ -29,10 +29,15 @@ export type ReuseBoxVideoItem = ReuseBoxItemBase & {
   youtubeUrl: string;
 };
 
+export type ReuseBoxLinkItem = ReuseBoxItemBase & {
+  type: "link";
+};
+
 export type ReuseBoxItem =
   | ReuseBoxAudioItem
   | ReuseBoxPdfItem
-  | ReuseBoxVideoItem;
+  | ReuseBoxVideoItem
+  | ReuseBoxLinkItem;
 
 export type ReuseBoxIconsByType = Partial<
   Record<ReuseBoxContentType, ReactNode>

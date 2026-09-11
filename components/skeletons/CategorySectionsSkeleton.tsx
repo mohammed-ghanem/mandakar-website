@@ -6,16 +6,9 @@ import {
   CategoryLinkRowSkeleton,
 } from "./categorySkeletonParts";
 
-const SectionCardSkeleton = ({
-  links = 4,
-}: {
-  links?: number;
-}) => (
+const SectionCardSkeleton = ({ links = 0 }: { links?: number }) => (
   <article
-    className={cn(
-      "rounded-2xl bg-white p-4 sm:p-6 md:p-8",
-      CARD_SHADOW,
-    )}
+    className={cn("rounded-2xl bg-white p-4 sm:p-6 md:p-8", CARD_SHADOW)}
   >
     <Skeleton className="mb-2 h-8 w-12 sm:h-10 sm:w-14" />
     {links > 0 ? (
@@ -36,7 +29,7 @@ const SectionCardSkeleton = ({
         </div>
       </>
     ) : (
-      <Skeleton className="h-6 w-32 sm:h-7 sm:w-40" />
+      <Skeleton className="h-6 w-40 sm:h-7 sm:w-56" />
     )}
   </article>
 );
@@ -45,17 +38,18 @@ const CategorySectionsSkeleton = () => {
   return (
     <section
       className="bkMainColor pb-12 pt-6 sm:pb-16 sm:pt-8"
+      aria-busy="true"
       aria-hidden
     >
       <CategoryBreadcrumbBarSkeleton crumbs={2} />
 
       <div className="container mx-auto w-full max-w-7xl px-2 sm:px-4 md:w-[90%]">
         <div className="flex flex-col gap-4 sm:gap-5">
-          <SectionCardSkeleton links={6} />
           <SectionCardSkeleton links={4} />
-          <SectionCardSkeleton links={4} />
+          <SectionCardSkeleton />
+          <SectionCardSkeleton />
           <SectionCardSkeleton links={2} />
-          <SectionCardSkeleton links={0} />
+          <SectionCardSkeleton />
         </div>
       </div>
     </section>
