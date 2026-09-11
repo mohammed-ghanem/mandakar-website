@@ -69,7 +69,7 @@ const TopHeader = () => {
               width={240}
               height={250}
               priority
-              className="h-auto w-full max-w-[240px] xl:max-w-[250px]"
+              className="h-auto w-full max-w-60 xl:max-w-62.5"
             />
           </Link>
           <div className="flex justify-end">

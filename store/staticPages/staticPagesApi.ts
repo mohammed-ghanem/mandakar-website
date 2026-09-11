@@ -71,7 +71,7 @@ export const staticPagesApi = createApi({
             { lang: string }
         >({
             query: ({ lang }) => ({
-                url: `${CLIENT_STATIC_PAGES_BASE}/about-app`,
+                url: `${CLIENT_STATIC_PAGES_BASE}/about-sheikh`,
                 method: "GET",
                 headers: {
                     "Accept-Language": lang,
