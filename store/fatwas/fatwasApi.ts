@@ -263,9 +263,9 @@ export const fatwasApi = createApi({
             fatwa._description,
             arg.lang,
           ),
+          image: fatwa.image || undefined,
           youtubeUrl: fatwa.youtube_url || undefined,
           videoUrl: fatwa.video_url || undefined,
-          videoPoster: fatwa.image || undefined,
           views: fatwa.views_count ?? 0,
           previous: fatwa.previous_item
             ? {

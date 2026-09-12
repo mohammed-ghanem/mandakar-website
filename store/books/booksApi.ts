@@ -267,9 +267,9 @@ export const booksApi = createApi({
           audioUrl: book.audio || undefined,
           downloadUrl: book.audio || undefined,
           description: getBookDescription(book.description, book._description, arg.lang),
+          image: book.image || undefined,
           youtubeUrl: book.youtube_url || undefined,
           videoUrl: book.video_url || undefined,
-          videoPoster: book.image || undefined,
           views: book.views_count ?? 0,
           previous: book.previous_item
             ? {

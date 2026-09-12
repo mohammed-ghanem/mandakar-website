@@ -266,9 +266,9 @@ export const lecturesApi = createApi({
           audioUrl: lecture.audio || undefined,
           downloadUrl: lecture.audio || undefined,
           description,
+          image: lecture.image || undefined,
           youtubeUrl: lecture.youtube_url || undefined,
           videoUrl: lecture.video_url || undefined,
-          videoPoster: lecture.image || undefined,
           views: lecture.views_count ?? 0,
           previous: lecture.previous_item
             ? {

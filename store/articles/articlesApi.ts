@@ -272,9 +272,9 @@ export const articlesApi = createApi({
             article._description,
             arg.lang,
           ),
+          image: article.image || undefined,
           youtubeUrl: article.youtube_url || undefined,
           videoUrl: article.video_url || undefined,
-          videoPoster: article.image || undefined,
           views: article.views_count ?? 0,
           previous: article.previous_item
             ? {

@@ -379,7 +379,7 @@ const CategoryContentView = ({
                 aria-label={labels.play}
               >
                 <Image
-                  src={data.videoPoster || getYoutubeThumbnailUrl(data.youtubeUrl!)}
+                  src={getYoutubeThumbnailUrl(data.youtubeUrl!)}
                   alt=""
                   fill
                   className="object-cover"
@@ -533,11 +533,11 @@ const CategoryContentView = ({
       <aside className="space-y-5">
         <article className={`${CARD} flex flex-col items-center py-8`}>
           <Image
-            src={defaultImage}
+            src={data.image || defaultImage}
             alt=""
             width={380}
             height={140}
-            className="h-auto w-full"
+            className="h-auto w-full object-contain"
           />
         </article>
 

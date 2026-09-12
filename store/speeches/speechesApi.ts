@@ -255,9 +255,9 @@ export const speechesApi = createApi({
           audioUrl: speech.audio || undefined,
           downloadUrl: speech.audio || undefined,
           description,
+          image: speech.image || undefined,
           youtubeUrl: speech.youtube_url || undefined,
           videoUrl: speech.video_url || undefined,
-          videoPoster: speech.image || undefined,
           views: speech.views_count ?? 0,
           previous: speech.previous_item
             ? {

@@ -113,6 +113,7 @@ type ApiExplanationContentResponse = {
 export type ScholarlyExplanationContent = {
   id: string | number;
   title: string;
+  image?: string;
   audioUrl?: string;
   downloadUrl?: string;
   description?: string;
@@ -288,9 +289,9 @@ export const scholarlyApi = createApi({
             audioUrl: explanation.audio || undefined,
             downloadUrl: explanation.audio || undefined,
             description,
+            image: explanation.image || undefined,
             youtubeUrl: explanation.youtube_url || undefined,
             videoUrl: explanation.video_url || undefined,
-            videoPoster: explanation.image || undefined,
             views: explanation.views_count ?? 0,
             previous: explanation.previous_item
               ? {
