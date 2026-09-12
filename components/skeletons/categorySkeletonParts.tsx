@@ -29,7 +29,7 @@ export const CategoryLinkRowSkeleton = ({
   <div className={cn("inline-flex min-w-0 items-center gap-2", className)}>
     <Skeleton className="h-8 w-8 shrink-0 rounded-full sm:h-9 sm:w-9" />
     <div className="min-w-0 space-y-2">
-      <Skeleton className="h-4 w-28 sm:h-[1.125rem] sm:w-36" />
+      <Skeleton className="h-4 w-28 sm:h-4.5 sm:w-36" />
       <Skeleton className="h-px w-28 sm:w-36" />
     </div>
   </div>
