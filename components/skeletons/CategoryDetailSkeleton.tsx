@@ -34,7 +34,7 @@ const BoxCardSkeleton = () => (
 
 const BoxesGridSkeleton = () => (
   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    {Array.from({ length: 4 }).map((_, index) => (
+    {Array.from({ length: 2 }).map((_, index) => (
       <BoxCardSkeleton key={index} />
     ))}
   </div>
@@ -45,11 +45,12 @@ const TopicsCardSkeleton = () => (
     className={cn("rounded-2xl bg-white p-4 sm:p-6 md:p-8", CARD_SHADOW)}
   >
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-4">
-      {Array.from({ length: 10 }).map((_, index) => (
+      {Array.from({ length: 6 }).map((_, index) => (
         <div
           key={index}
           className={cn(
             "min-w-0",
+            // Match CategorySubList RTL separators (even columns).
             index % 2 === 1 && "sm:border-r sm:border-[#e6d6c0] sm:ps-5",
           )}
         >

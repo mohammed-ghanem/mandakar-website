@@ -8,17 +8,20 @@ type ResolveCategorySkeletonArgs = {
   resolvedCategory?: CategoryItem | null;
   /** True while the leaf is expected to load topic items via /items */
   expectsItems?: boolean;
+  /** Section APIs that support .../categories/:id/items */
+  hasItemsEndpoint?: boolean;
 };
 
 /**
  * Picks the closest skeleton layout for nested category/content routes
- * so loading states don't flash the wrong shape (boxes vs topics vs content).
+ * so loading states match the real UI (2-col topics vs section boxes).
  */
 export const resolveCategorySkeletonVariant = ({
   isContentRoute,
   categoryIds,
   resolvedCategory,
   expectsItems = false,
+  hasItemsEndpoint = false,
 }: ResolveCategorySkeletonArgs): CategorySkeletonVariant => {
   if (isContentRoute) return "content";
 
@@ -30,10 +33,13 @@ export const resolveCategorySkeletonVariant = ({
     if (hasTopics(resolvedCategory)) return "topics";
   }
 
-  // Sub-sub routes and leaf /items fetches usually render topic links.
+  // Leaf /items routes and deep nests render the 2-column topics list.
   if (expectsItems || categoryIds.length >= 3) return "topics";
 
-  // Main / mid categories usually render section boxes.
+  // With an items endpoint, depth-1 is usually a topics leaf until proven otherwise.
+  if (hasItemsEndpoint && categoryIds.length === 1) return "topics";
+
+  // Mid-level section trees render the boxes grid.
   return "boxes";
 };
 

@@ -147,17 +147,15 @@ export const useResolvedCategoryRoute = ({
   const hasItemsEndpoint = Boolean(useGetCategoryItemsQuery);
   const getCategoryItems = useGetCategoryItemsQuery ?? useGetCategoryQuery;
 
-  const leafLooksLikeSectionTree =
+  // Only skip /items once we know this category is a sections tree.
+  const leafIsSectionTree =
     Boolean(leafCategory) && hasChildren(leafCategory!);
 
-  // Sub-sub routes always use /items. Shallower leaves use /items only when
-  // category detail has no nested sections (topics live on the items payload).
   const shouldFetchItems =
     hasItemsEndpoint &&
     isCategoryRoute &&
     Boolean(leafCategoryId) &&
-    (categoryIds.length >= 3 ||
-      (!isLeafLoading && (isLeafError || !leafLooksLikeSectionTree)));
+    !leafIsSectionTree;
 
   const {
     data: itemsCategory,
@@ -247,7 +245,8 @@ export const useResolvedCategoryRoute = ({
     isContentRoute,
     categoryIds,
     resolvedCategory,
-    expectsItems: shouldFetchItems || Boolean(itemsNode && hasTopics(itemsNode)),
+    expectsItems: shouldFetchItems,
+    hasItemsEndpoint,
   });
 
   const skeletonCrumbs = resolveCategorySkeletonCrumbs({
