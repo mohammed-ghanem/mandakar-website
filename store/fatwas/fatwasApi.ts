@@ -8,6 +8,7 @@ import type {
   ScholarlyExplanationContent,
   ScholarlyExplanationPageData,
 } from "@/store/scholarly/scholarlyApi";
+import { getLocalizedText } from "@/lib/localizedText";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const FATWAS_API_BASE = `${BASE_URL}/client-api/v1/fatwas`;
@@ -107,12 +108,6 @@ type ApiFatwaResponse = {
   };
 };
 
-const getLocalizedText = (
-  localized: ApiLocalizedText | undefined,
-  fallback: string | undefined,
-  lang: string,
-) => localized?.[lang as keyof ApiLocalizedText] || fallback || "";
-
 const sortByOrder = <T extends { sort_order?: number }>(
   items?: T[] | null,
 ) => [...(items ?? [])].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
@@ -169,12 +164,13 @@ const getFatwaDescription = (
   fallback: string | undefined,
   lang: string,
 ) => {
-  if (fallback) return fallback;
-  if (typeof description === "string") return description;
-  if (description && typeof description === "object") {
-    return getLocalizedText(description as ApiLocalizedText, undefined, lang);
+  if (typeof description === "string") {
+    return getLocalizedText(description, fallback, lang);
   }
-  return "";
+  if (description && typeof description === "object" && !Array.isArray(description)) {
+    return getLocalizedText(description as ApiLocalizedText, fallback, lang);
+  }
+  return getLocalizedText(undefined, fallback, lang);
 };
 
 export const fatwasApi = createApi({

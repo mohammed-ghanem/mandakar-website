@@ -10,13 +10,15 @@ import LangUseParams from "@/translate/LangUseParams";
 import HeroSectionSkeleton from "@/components/skeletons/HeroSectionSkeleton";
 import { getCarouselItemsPerView } from "./carouselBreakpoints";
 import { useGetHomeBannersQuery } from "@/store/home/homeApi";
-import defaultImage from "@/public/assets/images/def.png";
+import defaultImage from "@/public/assets/images/card.png";
 
 const TITLE_MAX_CHARS = 30;
-const DESCRIPTION_MAX_CHARS = 40;
+const DESCRIPTION_MAX_CHARS = 37;
 
 const truncateText = (text: string, max: number) =>
   text.length > max ? `${text.slice(0, max).trimEnd()}  …` : text;
+
+const hasArabicScript = (text: string) => /[\u0600-\u06FF]/.test(text);
 
 export const HeroSection = () => {
   const translate = TranslateHook();
@@ -41,44 +43,55 @@ export const HeroSection = () => {
     return <HeroSectionSkeleton />;
   }
 
-  const slider = banners.map((item) => (
-    <Link
-      key={item.id}
-      href={item.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="relative block h-full w-full overflow-hidden rounded-lg"
-    >
-      <div className="overlay pointer-events-none absolute inset-0 z-5 bg-black/50" />
-      <Image
-        src={item.image || defaultImage}
-        alt={item.title || "banner"}
-        fill
-        className="object-cover"
-        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 25vw"
-        draggable={false}
-      />
-      {item.categoryLabel ? (
-        <span className="absolute top-1.5 left-1.5 z-10 rounded-2xl border border-white/50 bg-black/20 px-1.5 py-0.5 text-[10px] font-semibold text-white sm:top-2 sm:left-2 sm:px-2 sm:py-1 sm:text-xs md:text-sm">
-          {item.categoryLabel}
-        </span>
-      ) : null}
-      <h2
-        dir="rtl"
-        className="absolute inset-x-1.5 bottom-7 z-10 text-right text-xs font-semibold text-white sm:inset-x-2 sm:bottom-9 sm:text-sm md:bottom-10 md:text-base"
+  const slider = banners.map((item) => {
+    const titleIsArabic = hasArabicScript(item.title);
+    const descriptionIsArabic = item.description
+      ? hasArabicScript(item.description)
+      : titleIsArabic;
+
+    return (
+      <Link
+        key={item.id}
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="relative block h-full w-full overflow-hidden rounded-lg"
       >
-        {truncateText(item.title, TITLE_MAX_CHARS)}
-      </h2>
-      {item.description ? (
-        <p
-          dir="rtl"
-          className="absolute inset-x-1.5 bottom-2 z-10 text-right text-[10px] font-medium text-white sm:inset-x-2 sm:bottom-3 sm:text-xs md:bottom-4 md:text-sm"
+        <div className="overlay pointer-events-none absolute inset-0 z-5 bg-black/50" />
+        <Image
+          src={item.image || defaultImage}
+          alt={item.title || "banner"}
+          fill
+          className="object-cover"
+          sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 25vw"
+          draggable={false}
+        />
+        {item.categoryLabel ? (
+          <span className="absolute top-1.5 left-1.5 z-10 rounded-2xl border border-white/50 bg-black/20 px-1.5 py-0.5 text-[10px] font-semibold text-white sm:top-2 sm:left-2 sm:px-2 sm:py-1 sm:text-xs md:text-sm">
+            {item.categoryLabel}
+          </span>
+        ) : null}
+        <h2
+          dir={titleIsArabic ? "rtl" : "ltr"}
+          className={`absolute inset-x-1.5 bottom-7 z-10 text-xs font-semibold text-white sm:inset-x-2 sm:bottom-9 sm:text-sm md:bottom-10 md:text-base ${
+            titleIsArabic ? "text-right" : "text-left"
+          }`}
         >
-          {truncateText(item.description, DESCRIPTION_MAX_CHARS)}
-        </p>
-      ) : null}
-    </Link>
-  ));
+          {truncateText(item.title, TITLE_MAX_CHARS)}
+        </h2>
+        {item.description ? (
+          <p
+            dir={descriptionIsArabic ? "rtl" : "ltr"}
+            className={`absolute inset-x-1.5 bottom-2 z-10 text-[10px] font-medium text-white sm:inset-x-2 sm:bottom-3 sm:text-xs md:bottom-4 md:text-sm ${
+              descriptionIsArabic ? "text-right" : "text-left"
+            }`}
+          >
+            {truncateText(item.description, DESCRIPTION_MAX_CHARS)}
+          </p>
+        ) : null}
+      </Link>
+    );
+  });
 
   return (
     <div className="relative pb-8 sm:pb-10">

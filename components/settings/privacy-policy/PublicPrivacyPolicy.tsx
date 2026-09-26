@@ -16,6 +16,7 @@ const PublicPrivacyPolicy = () => {
     <PublicStaticPage
       page={translate?.pages?.privacyPolicyPage}
       html={data?.html}
+      contentLang={data?.contentLang}
       isLoading={isLoading}
       isError={isError}
       onRetry={refetch}

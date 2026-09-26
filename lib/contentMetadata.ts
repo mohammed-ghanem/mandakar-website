@@ -8,6 +8,7 @@ import {
   getDefaultOgImage,
 } from "@/lib/siteMetadata";
 import { getSiteUrl } from "@/lib/siteUrl";
+import { getLocalizedText } from "@/lib/localizedText";
 
 export type ContentSection =
   | "lectures"
@@ -98,19 +99,6 @@ const getApiHeaders = (lang: string): HeadersInit => {
   const apiKey = process.env.NEXT_PUBLIC_API_KEY;
   if (apiKey) headers["api-key"] = apiKey;
   return headers;
-};
-
-const getLocalizedText = (
-  localized: LocalizedText | string | null | undefined,
-  fallback?: string | null,
-  lang = "ar",
-) => {
-  if (typeof localized === "string" && localized.trim()) return localized.trim();
-  if (localized && typeof localized === "object") {
-    const value = localized[lang as keyof LocalizedText] || localized.ar || localized.en;
-    if (value?.trim()) return value.trim();
-  }
-  return fallback?.trim() || "";
 };
 
 const stripHtml = (value?: string | null) => {

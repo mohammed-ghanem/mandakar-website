@@ -4,6 +4,7 @@ import type {
   CategoryItem,
   CategoryTopic,
 } from "@/components/categorySections/types";
+import { getLocalizedText } from "@/lib/localizedText";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const SCHOLARLY_API_BASE = `${BASE_URL}/client-api/v1/explanations`;
@@ -143,12 +144,6 @@ export type ScholarlyExplanationPageData = {
   content: ScholarlyExplanationContent;
   trail: Array<{ id: string | number; title: string }>;
 };
-
-const getLocalizedText = (
-  localized: ApiLocalizedName | ApiLocalizedTitle | undefined,
-  fallback: string | undefined,
-  lang: string,
-) => localized?.[lang as keyof ApiLocalizedName] || fallback || "";
 
 const sortByOrder = <T extends { sort_order?: number }>(
   items?: T[] | null,

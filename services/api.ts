@@ -39,12 +39,16 @@ api.interceptors.request.use(
   (config) => {
     config.headers = config.headers || {};
 
-    // Language
-    const lang =
-      typeof document !== "undefined"
-        ? document.cookie.match(/lang=(ar|en)/)?.[1] ?? "ar"
-        : "ar";
-    config.headers["Accept-Language"] = lang;
+    // Language — keep an explicit header when the caller set one (e.g. Arabic fallback)
+    const existingLang =
+      config.headers["Accept-Language"] ?? config.headers["accept-language"];
+    if (!existingLang) {
+      const lang =
+        typeof document !== "undefined"
+          ? document.cookie.match(/lang=(ar|en)/)?.[1] ?? "ar"
+          : "ar";
+      config.headers["Accept-Language"] = lang;
+    }
 
     // API key
     if (API_KEY) {

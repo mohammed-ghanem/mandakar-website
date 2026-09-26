@@ -36,6 +36,7 @@ type StaticHtmlPageProps = {
   title: string;
   crumbs: CategoryBreadcrumbItem[];
   html?: string;
+  contentLang?: string;
   isLoading?: boolean;
   isError?: boolean;
   onRetry?: () => void;
@@ -46,6 +47,7 @@ const StaticHtmlPage = ({
   title,
   crumbs,
   html,
+  contentLang,
   isLoading,
   isError,
   onRetry,
@@ -53,6 +55,7 @@ const StaticHtmlPage = ({
 }: StaticHtmlPageProps) => {
   const lang = LangUseParams();
   const content = html?.trim() ?? "";
+  const dirLang = contentLang || lang;
 
   if (isLoading) {
     return <StaticHtmlPageSkeleton />;
@@ -91,7 +94,7 @@ const StaticHtmlPage = ({
             CARD_SHADOW,
             PROSE_CLASS,
           )}
-          dir={lang === "ar" ? "rtl" : "ltr"}
+          dir={dirLang === "ar" ? "rtl" : "ltr"}
           dangerouslySetInnerHTML={{ __html: content }}
         />
       )}

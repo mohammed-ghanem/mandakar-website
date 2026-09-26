@@ -8,6 +8,7 @@ import type {
   ScholarlyExplanationContent,
   ScholarlyExplanationPageData,
 } from "@/store/scholarly/scholarlyApi";
+import { getLocalizedText } from "@/lib/localizedText";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const SPEECHES_API_BASE = `${BASE_URL}/client-api/v1/speeches`;
@@ -111,12 +112,6 @@ type ApiSpeechResponse = {
     };
   };
 };
-
-const getLocalizedText = (
-  localized: ApiLocalizedName | ApiLocalizedTitle | undefined,
-  fallback: string | undefined,
-  lang: string,
-) => localized?.[lang as keyof ApiLocalizedName] || fallback || "";
 
 const sortByOrder = <T extends { sort_order?: number }>(
   items?: T[] | null,

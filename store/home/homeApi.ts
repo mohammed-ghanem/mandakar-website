@@ -22,6 +22,7 @@ import {
   buildBookHref,
   buildBookCategoryHref,
 } from "@/store/books/booksApi";
+import { getLocalizedText } from "@/lib/localizedText";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const HOME_API_BASE = `${BASE_URL}/client-api/v1/home`;
@@ -168,19 +169,6 @@ export type HomeSearchResults = {
   fatwas: ReuseBoxItem[];
   articles: ReuseBoxItem[];
   books: ReuseBoxItem[];
-};
-
-const getLocalizedText = (
-  value: ApiLocalizedText | string | undefined,
-  fallback: string | undefined,
-  lang: string,
-) => {
-  if (typeof value === "string" && value.trim()) return value.trim();
-  if (value && typeof value === "object") {
-    const text = value[lang as keyof ApiLocalizedText] || value.ar || value.en;
-    if (text?.trim()) return text.trim();
-  }
-  return fallback?.trim() || "";
 };
 
 const toLocalizedHref = (url: string | null | undefined, lang: string) => {

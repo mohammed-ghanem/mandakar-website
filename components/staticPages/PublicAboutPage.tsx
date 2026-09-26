@@ -16,6 +16,7 @@ const PublicAboutPage = () => {
     <PublicStaticPage
       page={translate?.pages?.aboutPage}
       html={data?.html}
+      contentLang={data?.contentLang}
       isLoading={isLoading}
       isError={isError}
       onRetry={refetch}

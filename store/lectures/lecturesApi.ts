@@ -8,6 +8,7 @@ import type {
   ScholarlyExplanationContent,
   ScholarlyExplanationPageData,
 } from "@/store/scholarly/scholarlyApi";
+import { getLocalizedText, getMixedText } from "@/lib/localizedText";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const LECTURES_API_BASE = `${BASE_URL}/client-api/v1/lectures`;
@@ -111,21 +112,6 @@ type ApiLectureResponse = {
       } | null;
     };
   };
-};
-
-const getLocalizedText = (
-  localized: ApiLocalizedName | ApiLocalizedTitle | undefined,
-  fallback: string | undefined,
-  lang: string,
-) => localized?.[lang as keyof ApiLocalizedName] || fallback || "";
-
-const getMixedText = (
-  value: ApiLocalizedTitle | string | undefined,
-  fallback: string | undefined,
-  lang: string,
-) => {
-  if (typeof value === "string") return value || fallback || "";
-  return getLocalizedText(value, fallback, lang);
 };
 
 const sortByOrder = <T extends { sort_order?: number }>(

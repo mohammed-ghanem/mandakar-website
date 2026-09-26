@@ -17,6 +17,7 @@ const PublicTermsAndConditions = () => {
     <PublicStaticPage
       page={translate?.pages?.termsAndConditionsPage}
       html={data?.html}
+      contentLang={data?.contentLang}
       isLoading={isLoading}
       isError={isError}
       onRetry={refetch}

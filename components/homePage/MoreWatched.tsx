@@ -35,7 +35,7 @@ const MoreWatched = () => {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15"
         style={{
-          backgroundImage: 'url("/assets/images/bgwatched.webp")',
+          backgroundImage: 'url("/assets/images/watched.webp")',
         }}
       />
 

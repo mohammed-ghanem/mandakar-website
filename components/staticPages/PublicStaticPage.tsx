@@ -16,6 +16,7 @@ type PageCopy = {
 type PublicStaticPageProps = {
   page?: PageCopy;
   html?: string;
+  contentLang?: string;
   isLoading?: boolean;
   isError?: boolean;
   onRetry?: () => void;
@@ -24,6 +25,7 @@ type PublicStaticPageProps = {
 const PublicStaticPage = ({
   page,
   html,
+  contentLang,
   isLoading,
   isError,
   onRetry,
@@ -46,6 +48,7 @@ const PublicStaticPage = ({
         { label: title },
       ]}
       html={html}
+      contentLang={contentLang}
       isLoading={isLoading}
       isError={isError}
       onRetry={onRetry}

@@ -349,22 +349,30 @@ const ReuseBoxItemRow = ({
   const resolvedIcon = iconsByType?.[type] ?? icon;
 
   return (
-    <article className="flex flex-1 items-center gap-3 rounded-xl border border-[#E6D6C0]/40 bg-white p-3 shadow-sm sm:p-4">
+    <article className="group relative flex flex-1 items-center gap-3 rounded-xl border border-[#E6D6C0]/40 bg-white p-3 shadow-sm transition-[background-color,box-shadow] duration-200 hover:bg-[#F0EBE3] hover:shadow-[0_4px_14px_rgba(61,48,32,0.12)] sm:p-4">
+      {titleHref ? (
+        <Link
+          href={titleHref}
+          className="absolute inset-0 z-0 rounded-xl"
+          aria-label={title}
+        />
+      ) : null}
+
       <div
         className={
           showIconBackground
-            ? "flex h-11 w-11 shrink-0 items-center justify-center rounded-full scoundBgColor sm:h-12 sm:w-12"
-            : "flex h-11 w-11 shrink-0 items-center justify-center sm:h-12 sm:w-12 m-4 ml-5"
+            ? "relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full scoundBgColor sm:h-12 sm:w-12"
+            : "relative z-10 m-4 ml-5 flex h-11 w-11 shrink-0 items-center justify-center sm:h-12 sm:w-12"
         }
       >
         {resolvedIcon}
       </div>
 
-      <div className="min-w-0 flex-1 text-right">
+      <div className="relative z-10 min-w-0 flex-1 text-right">
         {subtitleHref ? (
           <Link
             href={subtitleHref}
-            className="inline-block text-xs font-medium scoundColor underline underline-offset-4 transition-colors hover:text-[#9D732C] sm:text-sm"
+            className="relative z-10 inline-block text-xs font-medium scoundColor underline underline-offset-4 transition-colors hover:text-[#9D732C] sm:text-sm"
           >
             {subtitle}
           </Link>
@@ -377,7 +385,7 @@ const ReuseBoxItemRow = ({
         {titleHref ? (
           <Link
             href={titleHref}
-            className="mt-0.5 line-clamp-2 block text-sm font-semibold leading-snug transition-colors hover:text-[#9D732C] sm:text-base"
+            className="relative z-10 mt-0.5 line-clamp-2 block text-sm font-semibold leading-snug transition-colors hover:text-[#9D732C] sm:text-base"
           >
             {title}
           </Link>
@@ -388,15 +396,17 @@ const ReuseBoxItemRow = ({
         )}
 
         {type === "audio" && (
-          <AudioPlayerBar
-            audioUrl={item.audioUrl}
-            duration={item.duration}
-            progress={item.progress}
-          />
+          <div className="relative z-10">
+            <AudioPlayerBar
+              audioUrl={item.audioUrl}
+              duration={item.duration}
+              progress={item.progress}
+            />
+          </div>
         )}
       </div>
 
-      <div className="flex shrink-0 items-center self-center">
+      <div className="relative z-10 flex shrink-0 items-center self-center">
         {type === "audio" && <DownloadButton href={item.downloadUrl} />}
         {type === "pdf" && <PdfItemActions {...item} />}
         {type === "video" && <VideoItemActions {...item} />}
