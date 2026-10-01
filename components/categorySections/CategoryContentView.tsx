@@ -33,6 +33,7 @@ import {
 import pdfIcon from "@/public/assets/images/pdf.svg";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import type { ScholarlyExplanationContent } from "@/store/scholarly/scholarlyApi";
+import { getTextDir } from "@/lib/textDirection";
 
 const PdfViewer = dynamic(() => import("@/components/reusebox/PdfViewer"), {
   ssr: false,
@@ -194,7 +195,10 @@ const CategoryContentView = ({
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(240px,300px)]">
       <div className="min-w-0 space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h1 className="min-w-0 flex-1 text-lg font-bold sm:text-xl">
+          <h1
+            dir={getTextDir(lessonTitle, lang)}
+            className="min-w-0 flex-1 text-lg font-bold sm:text-xl"
+          >
             {lessonTitle}
           </h1>
           <p className="flex shrink-0 items-center gap-1.5 text-sm grayColor">
@@ -339,11 +343,14 @@ const CategoryContentView = ({
             {hasHtmlDescription ? (
               <div
                 className={HTML_DESCRIPTION_CLASS}
-                dir={lang === "ar" ? "rtl" : "ltr"}
+                dir={getTextDir(data.description, lang)}
                 dangerouslySetInnerHTML={{ __html: data.description ?? "" }}
               />
             ) : (
-              <p className="text-sm leading-8 grayColor sm:text-base">
+              <p
+                dir={getTextDir(data.description, lang)}
+                className="text-sm leading-8 grayColor sm:text-base"
+              >
                 {isExpanded ? data.description : shortDescription}
               </p>
             )}
@@ -441,7 +448,10 @@ const CategoryContentView = ({
                         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full scoundBgColor text-xs font-bold scoundColor">
                           <Image src={pdfIcon} alt="pdf" width={22} height={22} />
                         </span>
-                        <span className="min-w-0 flex-1 wrap-break-word text-sm font-semibold">
+                        <span
+                          dir={getTextDir(file.title, lang)}
+                          className="min-w-0 flex-1 wrap-break-word text-sm font-semibold"
+                        >
                           {file.title}
                         </span>
                         <div className="flex shrink-0 items-center gap-1.5">
@@ -483,6 +493,7 @@ const CategoryContentView = ({
                           href={item.href}
                           target="_blank"
                           rel="noopener noreferrer"
+                          dir={getTextDir(item.title, lang)}
                           className="min-w-0 flex-1 wrap-break-word text-sm font-semibold hover:underline underline-offset-4"
                         >
                           {item.title}
@@ -517,7 +528,10 @@ const CategoryContentView = ({
                           height={48}
                           className="h-12 w-12 shrink-0 rounded-lg object-cover"
                         />
-                        <span className="min-w-0 block text-sm font-semibold">
+                        <span
+                          dir={getTextDir(item.title, lang)}
+                          className="min-w-0 block flex-1 text-sm font-semibold"
+                        >
                           {item.title}
                         </span>
                       </Link>
@@ -569,7 +583,10 @@ const CategoryContentView = ({
                     />
                     <span className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-transparent" />
 
-                    <span className="absolute inset-x-3 bottom-3 text-sm font-bold text-white">
+                    <span
+                      dir={getTextDir(topic.title, lang)}
+                      className="absolute inset-x-3 bottom-3 text-sm font-bold text-white"
+                    >
                       {topic.title}
                     </span>
                   </Link>

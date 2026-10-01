@@ -5,6 +5,7 @@ import LangUseParams from "@/translate/LangUseParams";
 import FolderBadge from "./FolderBadge";
 import CategorySubList from "./CategorySubList";
 import { hasChildren, withLang, type CategoryItem, type FoundCategory } from "./types";
+import { getTextDir } from "@/lib/textDirection";
 
 export type CategoryBreadcrumbItem = {
   label: string;
@@ -71,7 +72,10 @@ const CategoryChildrenView = ({
 
         <article className="rounded-2xl bg-white p-4 shadow-sm sm:p-6 md:p-8">
           <div className="mb-5 flex items-center gap-3 sm:mb-6 sm:gap-4 ">
-            <h1 className="min-w-0 flex-1 text-lg font-bold mainColor sm:text-xl">
+            <h1
+              dir={getTextDir(node.title, lang)}
+              className="min-w-0 flex-1 text-lg font-bold mainColor sm:text-xl"
+            >
               {node.title}
             </h1>
           

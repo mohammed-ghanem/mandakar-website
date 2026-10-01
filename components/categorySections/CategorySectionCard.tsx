@@ -2,6 +2,7 @@ import Link from "next/link";
 import LangUseParams from "@/translate/LangUseParams";
 import CategorySubList from "./CategorySubList";
 import { hasChildren, withLang, type CategoryItem } from "./types";
+import { getTextDir } from "@/lib/textDirection";
 
 type CategorySectionCardProps = {
   item: CategoryItem;
@@ -15,7 +16,12 @@ const CategorySectionCard = ({ item, index }: CategorySectionCardProps) => {
   const href = withLang(lang, item.href);
 
   const title = (
-    <h2 className="min-w-0 flex-1 text-lg font-bold">{item.title}</h2>
+    <h2
+      dir={getTextDir(item.title, lang)}
+      className="min-w-0 flex-1 text-lg font-bold"
+    >
+      {item.title}
+    </h2>
   );
 
   return (

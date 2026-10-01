@@ -5,6 +5,7 @@ import CategoryLink from "./CategoryLink";
 import { withLang, type CategoryItem, type CategoryTopic } from "./types";
 import LangUseParams from "@/translate/LangUseParams";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getTextDir } from "@/lib/textDirection";
 
 type CategorySubBoxesGridProps = {
   items: CategoryItem[];
@@ -45,12 +46,16 @@ const CategorySubBoxesGrid = ({ items }: CategorySubBoxesGridProps) => {
             {href ? (
               <Link
                 href={href}
+                dir={getTextDir(item.title, lang)}
                 className="mb-4 block w-full text-start text-base font-bold transition-opacity hover:opacity-80 sm:text-lg"
               >
                 {item.title}
               </Link>
             ) : (
-              <h2 className="mb-4 w-full text-start text-base font-bold sm:text-lg">
+              <h2
+                dir={getTextDir(item.title, lang)}
+                className="mb-4 w-full text-start text-base font-bold sm:text-lg"
+              >
                 {item.title}
               </h2>
             )}

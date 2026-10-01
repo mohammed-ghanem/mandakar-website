@@ -1,5 +1,5 @@
 /* Font imports */
-@import url("https://fonts.googleapis.com/css2?family=Amiri&family=Almarai&family=Aref+Ruqaa:wght@400;700&family=El+Messiri&family=Reem+Kufi&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Amiri+Quran&family=Almarai&family=Aref+Ruqaa:wght@400;700&family=El+Messiri&family=Reem+Kufi&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Scheherazade+New:wght@400;500;600;700&display=swap");
 /* Tailwind imports */
@@ -236,6 +236,14 @@ svg {
 }
 .fontArefRuqaa {
   font-family: "Aref Ruqaa", serif;
+}
+
+.fontAmiri {
+  font-family: "Amiri", serif;
+}
+
+.fontAmiriQuran {
+  font-family: "Amiri Quran", serif;
 }
 
 /* Scheherazade New is tight by default; letter-spacing would break Arabic joining */
