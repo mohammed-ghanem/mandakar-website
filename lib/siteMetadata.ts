@@ -1,18 +1,17 @@
 import { getSiteUrl } from "@/lib/siteUrl";
 
-export const SITE_TITLE =
-  "التراث العلمى للشيخ فلاح مندكار";
+export const SITE_TITLE = "الموقع الرسمى للشيخ فلاح بن اسماعيل مندكار رحمه الله";
 
 export const SITE_DESCRIPTION =
   "الموقع الرسمي للشيخ فلاح مندكار رحمه الله، مكتبة علمية رقمية تضم الخطب والمحاضرات والدروس والمقالات والكتب والفتاوى، مرجعًا علميًا يسهل الوصول إليه.";
 
-export const SITE_TITLE_EN =
-  "The Scientific Heritage of Sheikh Falah Mandakar";
+export const SITE_TITLE_EN = "The Scientific Heritage of Sheikh Falah Mandakar";
 
 export const SITE_DESCRIPTION_EN =
   "The scientific heritage of Sheikh Falah Mandakar — a digital library of sermons, lectures, lessons, articles, books, and fatwas.";
 
 export const SITE_KEYWORDS = [
+  "الموقع الرسمي للشيخ فلاح مندكار",
   "التراث العلمى للشيخ فلاح مندكار",
   "الشيخ فلاح مندكار",
   "خطب",
@@ -23,5 +22,4 @@ export const SITE_KEYWORDS = [
   "شروح علمية",
 ] as const;
 
-export const getDefaultOgImage = () =>
-  `${getSiteUrl()}/assets/images/meta.png`;
+export const getDefaultOgImage = () => `${getSiteUrl()}/assets/images/meta.png`;
