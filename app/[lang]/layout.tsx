@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import "./globals.css";
+import { i18n, type Locale } from "@/i18n-config";
 import { Providers } from "../../providers/Providers";
 import { ReactNode } from "react";
 import Header from "@/components/header/Header";
@@ -15,6 +17,9 @@ import {
   getDefaultOgImage,
 } from "@/lib/siteMetadata";
 
+const isSupportedLocale = (lang: string): lang is Locale =>
+  (i18n.locales as readonly string[]).includes(lang);
+
 type LayoutProps = {
   children: ReactNode;
   params: Promise<{ lang: string }>;
@@ -24,6 +29,7 @@ export async function generateMetadata({
   params,
 }: LayoutProps): Promise<Metadata> {
   const { lang } = await params;
+  if (!isSupportedLocale(lang)) redirect("/");
   const isEn = lang === "en";
   const site = getSiteUrl();
   const title = isEn ? SITE_TITLE_EN : SITE_TITLE;
@@ -84,14 +90,11 @@ export async function generateMetadata({
 
 export default async function RootLayout({ children, params }: LayoutProps) {
   const { lang } = await params;
+  if (!isSupportedLocale(lang)) redirect("/");
   const dir = lang === "ar" ? "rtl" : "ltr";
-  const description = lang === "en" ? SITE_DESCRIPTION_EN : SITE_DESCRIPTION;
 
   return (
     <html lang={lang} dir={dir}>
-      <head>
-        <meta name="description" content={description} />
-      </head>
       <body className="overflow-x-hidden">
         <Providers>
           <div className="">
