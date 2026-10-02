@@ -31,7 +31,13 @@ const Footer = () => {
   }[] = [
     { key: "facebook", icon: facebook, alt: "Facebook", width: 10, height: 20 },
     { key: "x", icon: twitter, alt: "X", width: 20, height: 20 },
-    { key: "instagram", icon: instagram, alt: "Instagram", width: 20, height: 20 },
+    {
+      key: "instagram",
+      icon: instagram,
+      alt: "Instagram",
+      width: 20,
+      height: 20,
+    },
     { key: "youtube", icon: youtube, alt: "YouTube", width: 20, height: 20 },
     { key: "telegram", icon: telegram, alt: "Telegram", width: 20, height: 20 },
   ];
@@ -46,7 +52,10 @@ const Footer = () => {
     { label: navbar?.articles, href: `/${lang}/articles` },
     { label: navbar?.books, href: `/${lang}/books` },
     { label: navbar?.privacyPolicy, href: `/${lang}/privacy-policy` },
-    { label: navbar?.termsAndConditions, href: `/${lang}/terms-and-conditions` },
+    {
+      label: navbar?.termsAndConditions,
+      href: `/${lang}/terms-and-conditions`,
+    },
   ];
 
   const linkClassName =
@@ -127,12 +136,13 @@ const Footer = () => {
                 className="h-auto w-50 md:w-57.5"
               />
             </span>
-            <span>&copy; 2026 - {new Date().getFullYear()}</span>
+            <span>&copy; 2005 - {new Date().getFullYear()}</span>
           </p>
           <p className="mt-2 text-[10px] text-white sm:text-xs">
-            <Link href="https://wecandevmode.online" target="_blank">
+            {/* <Link href="#" target="_blank">
               WeCan For Development & IT
-            </Link>
+            </Link> */}
+            <span>WeCan For Development & IT</span>
           </p>
         </div>
       </div>
