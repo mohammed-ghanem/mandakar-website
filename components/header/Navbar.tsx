@@ -43,7 +43,7 @@ const Navbar = () => {
           </nav>
 
           {/* Mobile menu button */}
-          <div className="flex w-full items-center justify-end lg:hidden">
+          <div className="flex w-full items-center justify-start lg:hidden">
             <button
               type="button"
               onClick={() => setIsOpen((prev) => !prev)}
