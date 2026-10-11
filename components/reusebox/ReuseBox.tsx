@@ -276,7 +276,7 @@ const PdfItemActions = ({
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-h-[95vh] max-w-[95vw] gap-0 overflow-hidden p-0 pt-[50px] sm:max-w-6xl lg:max-w-7xl">
+        <DialogContent className="max-h-[95vh] max-w-[95vw] gap-0 overflow-hidden p-0 pt-12.5 sm:max-w-6xl lg:max-w-7xl">
           <DialogTitle className="sr-only">{title}</DialogTitle>
           {isOpen && <PdfViewer url={viewUrl} />}
         </DialogContent>
