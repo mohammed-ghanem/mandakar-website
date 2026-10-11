@@ -438,9 +438,9 @@ const ReuseBox = ({
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-3">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <ReuseBoxItemRow
-            key={item.id}
+            key={`${item.titleHref ?? item.type}-${item.id}-${index}`}
             icon={icon}
             iconsByType={iconsByType}
             showIconBackground={showIconBackground}

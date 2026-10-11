@@ -136,7 +136,7 @@ const Footer = () => {
                 className="h-auto w-50 md:w-57.5"
               />
             </span>
-            <span>&copy; 2005 - {new Date().getFullYear()}</span>
+            <span>&copy; 2007 - {new Date().getFullYear()}</span>
           </p>
           <p className="mt-2 text-[10px] text-white sm:text-xs">
             {/* <Link href="#" target="_blank">

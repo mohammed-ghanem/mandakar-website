@@ -32,7 +32,13 @@ const GlobeBtn = () => {
       aria-label={lang === "en" ? "Switch to Arabic" : "Switch to English"}
     >
       <span className="text-sm font-bold me-2">{lang === "en" ? "Ar" : "EN"}</span>
-      <Image src={langIcon} alt="lang" width={40} height={40} />
+      <Image
+        src={langIcon}
+        alt="lang"
+        width={40}
+        height={40}
+        className="size-5 sm:size-10"
+      />
     </button>
   );
 };
