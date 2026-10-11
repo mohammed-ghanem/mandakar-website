@@ -203,7 +203,7 @@ const AudioPlayerBar = ({
       />
 
       <div dir="ltr" className="  mx-auto mt-1.5 flex items-center gap-3">
-        <span className="min-w-[42px] shrink-0 text-xs font-medium tabular-nums text-[#737373] sm:text-sm">
+        <span className="min-w-10.5 shrink-0 text-xs font-medium tabular-nums text-[#737373] sm:text-sm">
           {displayTime}
         </span>
         <div
